@@ -1,0 +1,23 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Interventions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <app-interventions-liste 
+      *ngIf="interventionsListeActif"
+      (interventionOutput)="getInterventionOutput($event)"></app-interventions-liste>
+      
+  <app-interventions-details
+      *ngIf="!interventionsListeActif"
+      [interventionsDetailsInput]="interventionsDetailsInput"
+      (isInterventionDetailClose)="closeInterventionDetail()"></app-interventions-details>
+
+
+
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-button (click)="closeInterventionsDetails()"
+            color="dark"
+            class="buttonClose">Fermer</ion-button>
+
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      {{ interventionsDetailsInput.objet }}
+      <ion-button 
+                (click)="updateObjet(interventionsDetailsInput)"
+                class="btn-update"
+                style="float:right"
+                color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-card-title>
+    <ion-card-subtitle>
+      <u>Suivi par</u> : {{ interventionsDetailsInput.intervenant.libelle }}
+      <ion-button (click)="updateUtilisateur(interventionsDetailsInput)" class="btn-update" color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-card-subtitle>
+    <ion-card-subtitle>
+      <u>Etat</u> : {{ interventionsDetailsInput.etat }}
+      <ion-button (click)="updateEtat(interventionsDetailsInput)" class="btn-update" color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <u>Description</u> :
+    <ion-button (click)="updateDescription(interventionsDetailsInput)" class="btn-update" color="light">
+      <ion-icon name="pencil-outline"></ion-icon>
+    </ion-button>
+    <br>
+    {{ textarea(interventionsDetailsInput.description) }}
+  </ion-card-content>
+</ion-card>
+

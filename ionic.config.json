@@ -1,0 +1,8 @@
+{
+  "name": "supports",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

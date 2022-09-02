@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Accueil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <table>
+    <tr>
+      <th>Intervenant</th>
+      <th>Nouveau</th>
+      <th>En cours</th>
+      <th>Terminé</th>
+    </tr>
+    <tr *ngFor="let data of interventionParUtilisateur">
+      <td>{{ data.utilisateur.libelle }}</td>
+      <td>{{ data.totalNouveau }}</td>
+      <td>{{ data.totalEnCours }}</td>
+      <td>{{ data.totalTermine }}</td>
+    </tr>
+  </table>
+</ion-content>
