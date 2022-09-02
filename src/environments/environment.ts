@@ -4,15 +4,15 @@
 
 export const environment = {
   production: false,
-  firebaseConfig: {
-    apiKey: "<your-api-key>",
-    authDomain: "<your-auth-domain>",
-    databaseURL: "<your-database-url>",
-    projectId: "<your-cloud-firestore-project>",
-    storageBucket: "<your-storage-bucket>",
-    messagingSenderId: "<your-sender-id>",
-    appId: "<your-app-id>",
-    measurementId: "<your-measurement-id>"
+  firebase: {
+    apiKey: "AIzaSyCvmwGVqeGhgAclF3rnackNMJagOI448c4",
+    authDomain: "supports-d4baf.firebaseapp.com",
+    databaseURL: "https://supports-d4baf-default-rtdb.firebaseio.com",
+    projectId: "supports-d4baf",
+    storageBucket: "supports-d4baf.appspot.com",
+    messagingSenderId: "1039421858374",
+    appId: "1:1039421858374:web:3e3b3335c2f8db2c68e047",
+    measurementId: "G-D2ZB3F952Q"
   }
 };
 
