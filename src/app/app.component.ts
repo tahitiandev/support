@@ -3,7 +3,7 @@ import { Storage } from '@ionic/storage-angular';
 import { LocalName } from './enums/localName';
 import { StorageService } from './services/storage.service';
 import { UtilityService } from './services/utility.service';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -15,21 +15,11 @@ export class AppComponent implements OnInit {
 
   constructor(private storage : StorageService,
               private storages : Storage,
-              private utility : UtilityService,
-              private firestore : AngularFirestore) {
+              private utility : UtilityService ) {
   }
 
   ngOnInit(): void {
     this.onInit();
-
-    this.testfirebase()
-  }
-
-  public testfirebase(){
-    
-    this.firestore.collection('test').add({
-      hello : 'test'
-    })
   }
 
   private async onInit(){
