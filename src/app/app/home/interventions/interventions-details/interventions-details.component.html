@@ -36,5 +36,25 @@
     <br>
     {{ textarea(interventionsDetailsInput.description) }}
   </ion-card-content>
+  
 </ion-card>
 
+<ion-card *ngFor="let observation of interventionsDetailsInput.observations" class="observation-card">
+  <ion-card-header>
+    <ion-card-title class="title-obseration">
+      {{ observation.createdOn | date:'cc MMMM YYYY' }}
+    </ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    {{ observation.description }}
+  </ion-card-content>
+  
+</ion-card>
+
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="this.postObservation(interventionsDetailsInput)">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

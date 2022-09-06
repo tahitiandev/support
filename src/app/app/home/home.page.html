@@ -8,6 +8,7 @@
 </ion-header>
 
 <ion-content>
+
   <table>
     <tr>
       <th>Intervenant</th>
@@ -22,4 +23,14 @@
       <td>{{ data.totalTermine }}</td>
     </tr>
   </table>
+
+  <ion-refresher slot="fixed" (ionRefresh)="refreshNavBar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+
+
+
+
 </ion-content>

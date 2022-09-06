@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
+import { LocalName } from '../enums/localName';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +9,8 @@ import { AlertController, NavController } from '@ionic/angular';
 export class UtilityService {
 
   constructor(private route : NavController,
-              private alertController : AlertController) { }
+              private alertController : AlertController,
+              private storage : StorageService) { }
 
   public navigateTo(url : string){
     this.route.navigateRoot(url);
@@ -32,6 +35,14 @@ export class UtilityService {
 
   public textareaRetourChariot(texte){
     return texte.replace(/\r?\n/g, ' <br> ');
+  }
+
+  public returnInternetConnexion() : boolean{
+    return window.navigator.onLine;
+  }
+
+  public async getConnectInfo(){
+    return await this.storage.get(LocalName.Connect);
   }
 
 }

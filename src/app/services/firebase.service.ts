@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { LocalName } from '../enums/localName';
+import { Interventions } from '../interfaces/Interventions';
+import { Utilisateurs } from '../interfaces/Utilisateurs';
 import { StorageService } from './storage.service';
 
 @Injectable({
@@ -8,7 +10,7 @@ import { StorageService } from './storage.service';
 })
 export class FirebaseService {
 
-  constructor(private firestore : AngularFirestore,
+  constructor(public firestore : AngularFirestore,
               private storage : StorageService) { }
 
   public async post(collectionName : LocalName, data : any){
@@ -40,8 +42,46 @@ export class FirebaseService {
       await this.firestore.collection(collectionName)
                                     .doc(data.documentId)
                                     .update(data)
-                data.isModified = false;
     }
+  }
+
+  public async postAll(){
+    const Utilisateurs : Array<Utilisateurs> = await this.storage.get(LocalName.Utilisateurs);
+    const Interventions :Array<Interventions> = await this.storage.get(LocalName.Interventions);
+    
+    await this.postAllByLocalName(
+      LocalName.Utilisateurs,
+      Utilisateurs
+    );
+
+    await this.postAllByLocalName(
+      LocalName.Interventions,
+      Interventions
+    );
+
+  }
+  
+  private async postAllByLocalName(localName : LocalName, datas : Array<any>){
+    for(let data of datas){
+      if(!data.firebase){
+        await this.post(
+          localName,
+          data
+        );
+      }
+      if(data.firebase && data.modifiedOn !== null){
+        await this.put(
+          localName,
+          data
+        );
+      }
+      if(data.firebase && data.deletedOn !== null){
+        await this.put(
+          localName,
+          data
+        );
+      }
+    }//for
   }
 
 }

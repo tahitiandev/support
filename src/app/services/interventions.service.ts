@@ -48,4 +48,17 @@ export class InterventionsService {
     return response;
   }
 
+  public async generateObservationId(intervention : Interventions){
+
+    var observation = intervention.observations;
+    
+    if(intervention.observations.length === 0){
+      return 0
+    }
+    else{
+      const id = observation[observation.length - 1].id + 1
+      return id;
+    }
+  }
+
 }

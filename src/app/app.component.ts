@@ -62,6 +62,7 @@ export class AppComponent implements OnInit {
       
       this.navBarreSecond = [
         { title: 'Utilisateurs', url: '/utilisateurs', icon: 'happy' },
+        { title: 'Paramétrages', url: '/utilisateurs', icon: 'build' },
         { title: 'Se deconnecter', url: '/connect', icon: 'happy' },
       ]
     }

@@ -43,5 +43,10 @@ export class UtilisateursService {
     )
   }
 
+  public async getUtilisateurByLogin(login : string){
+    const utilisateurs = await this.get();
+    return await utilisateurs.find(utiliateur => utiliateur.username === login); 
+  }
+
 
 }

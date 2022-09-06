@@ -43,7 +43,8 @@ export class ConnectPage implements OnInit {
         
         const validation = {
           id : 0,
-          autorisation : true
+          autorisation : true,
+          utilisateur : await this.utilisateursService.getUtilisateurByLogin(data['username'])
         }
 
         await this.storage.resetLocalStorage(LocalName.Connect);
@@ -67,7 +68,8 @@ export class ConnectPage implements OnInit {
   private async deconnexion(){
     const validation = {
       id : 0,
-      autorisation : false
+      autorisation : false,
+      utilisateur : null
     }
 
     await this.storage.resetLocalStorage(LocalName.Connect);

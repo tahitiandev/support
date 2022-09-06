@@ -175,6 +175,49 @@ export class InterventionsDetailsComponent implements OnInit {
     await alert.present();
   }
 
+
+  public async postObservation(intervention : Interventions){
+
+    const alert = await this.alertController.create({
+      header: 'Ajouter une observation',
+      inputs : [
+        {
+          type : 'textarea',
+          name : 'description'
+        }
+      ],
+      buttons: [
+        {
+          text : 'Valider',
+          handler : async (response) => {
+
+            const createdBy = await this.utlity.getConnectInfo();
+            console.log(createdBy)
+
+            intervention.observations.push({
+              id : await this.interventionService.generateObservationId(intervention),
+              description : response.description,
+              createdBy : createdBy.libelle,
+              createdOn : await new Date(),
+              modifiedBy : null,
+              modifiedOn : null,
+              deletedBy : null,
+              deletedOn : null,
+              firebase : null,
+              documentId : null,
+            });
+
+            await this.interventionService.put(intervention);
+            this.interventionsDetailsInput = intervention;
+
+          }
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
   
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
 import { LocalName } from 'src/app/enums/localName';
 import { Interventions } from 'src/app/interfaces/Interventions';
@@ -6,6 +6,7 @@ import { Utilisateurs } from 'src/app/interfaces/Utilisateurs';
 import { InterventionsService } from 'src/app/services/interventions.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { UtilisateursService } from 'src/app/services/utilisateurs.service';
+
 
 interface InterventionParUtilisateur {
   utilisateur : string;
@@ -22,6 +23,7 @@ interface InterventionParUtilisateur {
 export class HomePage implements OnInit {
 
   interventionParUtilisateur = [];
+  @Output() refreshNavBarOutput = new EventEmitter();
 
   constructor(private storage : StorageService,
               private interventionsService : InterventionsService,
@@ -114,6 +116,11 @@ export class HomePage implements OnInit {
     }
 
     return result;
+  }
+
+  public refreshNavBar(event){
+    this.refreshNavBarOutput.emit();
+    event.target.complete();
   }
 
 }

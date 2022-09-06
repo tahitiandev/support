@@ -36,11 +36,20 @@ export class StorageService {
   }
 
   public async postData(localName : LocalName, data){
+    // Partie localstorage    
     const all = await this.get(localName);
     data.id = await this.generateId(localName);
     data.createdOn = await new Date();
     all.push(data);
     await this.postDatas(localName, all);
+
+    // // Partie firebase
+    // if(window.navigator.onLine){
+    //   await this.firebase.post(
+    //     localName,
+    //     data
+    //   )
+    // }
   }
 
   public async get(localName : LocalName){
@@ -64,6 +73,7 @@ export class StorageService {
 
   public async put(localName : LocalName, data){
 
+    // Partie localstorage
     const all = await this.get(localName);
 
     const index = await this.getIndex(localName, data);
@@ -71,6 +81,12 @@ export class StorageService {
     all[index] = data;
 
     await this.postDatas(localName, all);
+
+    // // Partie firebase
+    // await this.firebase.put(
+    //   localName,
+    //   data
+    // )
 
   }
 
