@@ -48,6 +48,7 @@ export class FirebaseService {
   public async postAll(){
     const Utilisateurs : Array<Utilisateurs> = await this.storage.get(LocalName.Utilisateurs);
     const Interventions :Array<Interventions> = await this.storage.get(LocalName.Interventions);
+    console.log(Interventions)
     
     await this.postAllByLocalName(
       LocalName.Utilisateurs,

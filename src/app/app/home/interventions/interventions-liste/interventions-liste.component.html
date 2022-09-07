@@ -5,7 +5,10 @@
     <ion-item-sliding>
       <ion-item (click)="emitIntervention(intervention)">
         <ion-label>
-          <ion-chip>{{ id }}</ion-chip> {{ intervention.etat }} {{ intervention.objet }}</ion-label>
+          <ion-chip>{{ id }}</ion-chip>
+          {{ intervention.objet }}
+        </ion-label>
+        <ion-chip slot="end">{{ intervention.etat }}</ion-chip>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option (click)="update(intervention)">Modifier</ion-item-option>
