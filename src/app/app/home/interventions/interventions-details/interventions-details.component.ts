@@ -2,11 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, AlertInput } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
 import { Interventions } from 'src/app/interfaces/Interventions';
+import { Observations } from 'src/app/interfaces/Observations';
 import { Utilisateurs } from 'src/app/interfaces/Utilisateurs';
 import { InterventionsService } from 'src/app/services/interventions.service';
+import { ObservationsService } from 'src/app/services/observations.service';
 import { UtilisateursService } from 'src/app/services/utilisateurs.service';
 import { UtilityService } from 'src/app/services/utility.service';
-
+import { Storage } from '@ionic/storage-angular';
+import { LocalName } from 'src/app/enums/localName';
 @Component({
   selector: 'app-interventions-details',
   templateUrl: './interventions-details.component.html',
@@ -16,13 +19,28 @@ export class InterventionsDetailsComponent implements OnInit {
 
   @Input() interventionsDetailsInput : Interventions;
   @Output() isInterventionDetailClose = new EventEmitter();
+  observations : Array<Observations> = [];
 
   constructor(private alertController : AlertController,
               private interventionService : InterventionsService,
               private utilisateurService : UtilisateursService,
-              private utlity : UtilityService) { }
+              private utlity : UtilityService,
+              private observationService : ObservationsService,
+              private storage : Storage) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.refresh();
+  }
+
+  private async refresh(){
+    const observations = await this.getObservations();
+    this.observations = observations;
+  }
+
+  public async getObservations(){
+    const observations : Array<Observations> = await this.observationService.getObservationByInterventionId(this.interventionsDetailsInput.id);
+    return observations;
+  }
 
   public closeInterventionsDetails(){
     this.isInterventionDetailClose.emit();
@@ -191,13 +209,12 @@ export class InterventionsDetailsComponent implements OnInit {
           text : 'Valider',
           handler : async (response) => {
 
-            const createdBy = await this.utlity.getConnectInfo();
-            console.log(createdBy)
-
-            intervention.observations.push({
-              id : await this.interventionService.generateObservationId(intervention),
+            const createdBy = await this.storage.get(LocalName.Connect);
+            
+            const observation : Observations = {
+              id : await this.observationService.generateId(intervention.id),
               description : response.description,
-              createdBy : createdBy.libelle,
+              createdBy : createdBy[0].utilisateur.libelle,
               createdOn : await new Date(),
               modifiedBy : null,
               modifiedOn : null,
@@ -205,10 +222,11 @@ export class InterventionsDetailsComponent implements OnInit {
               deletedOn : null,
               firebase : null,
               documentId : null,
-            });
+              interventionId : intervention.id
+            };
 
-            await this.interventionService.put(intervention);
-            this.interventionsDetailsInput = intervention;
+            await this.observationService.post(observation);
+            await this.refresh();
 
           }
         }

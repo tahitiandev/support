@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { LocalName } from '../enums/localName';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
 
-  constructor(private storage : Storage) {
+  constructor(private storage : Storage,
+              private firebase : FirebaseService) {
     this.setStorage();
    }
 
@@ -20,13 +22,7 @@ export class StorageService {
     if(data === null){
       await this.storage.set(localName, []);
       if(isConnect){
-        await this.postData(
-          LocalName.Connect,
-          {
-            id : 0,
-            autorisation : false
-          }
-        )
+        await this.deconnexion();
       }
     }
   }
@@ -43,13 +39,13 @@ export class StorageService {
     all.push(data);
     await this.postDatas(localName, all);
 
-    // // Partie firebase
-    // if(window.navigator.onLine){
-    //   await this.firebase.post(
-    //     localName,
-    //     data
-    //   )
-    // }
+    // Partie firebase
+    if(window.navigator.onLine){
+      await this.firebase.post(
+        localName,
+        data
+      )
+    }
   }
 
   public async get(localName : LocalName){
@@ -82,15 +78,16 @@ export class StorageService {
 
     await this.postDatas(localName, all);
 
-    // // Partie firebase
-    // await this.firebase.put(
-    //   localName,
-    //   data
-    // )
+    // Partie firebase
+    await this.firebase.put(
+      localName,
+      data
+    )
 
   }
 
   public async delete(localName : LocalName, data){
+    // Partie localstorage
     const all = await this.get(localName);
 
     const index = await this.getIndex(localName, data);
@@ -98,6 +95,14 @@ export class StorageService {
     all[index] = data;
 
     await this.postDatas(localName, all);
+
+    // Partie firebase
+    if(window.navigator.onLine){
+      await this.firebase.put(
+        localName,
+        data
+      )
+    }
   }
 
   private orderById(data : Array<any>){
@@ -138,6 +143,26 @@ export class StorageService {
       localName,
       []
     );
+  }
+
+  public async deconnexion(){
+    await this.storage.set(
+      LocalName.Connect,
+      [
+        {
+          id : 0,
+          autorisation : false,
+          utilisateur : null
+        }
+      ]
+    )
+  }
+
+  public async connexion(infoConnexion){
+    await this.storage.set(
+      LocalName.Connect,
+      infoConnexion
+    )
   }
 
 }

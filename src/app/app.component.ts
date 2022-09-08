@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   private async onInit(){
     await this.setUtilisateurs();
     await this.setInterventions();
+    await this.setObservations();
     await this.setConnect();
     await this.connexion();
   }
@@ -35,6 +36,10 @@ export class AppComponent implements OnInit {
 
   private async setInterventions(){
     await this.storage.initLocalName(LocalName.Interventions);
+  }
+
+  private async setObservations(){
+    await this.storage.initLocalName(LocalName.Observations);
   }
 
   private async setConnect(){

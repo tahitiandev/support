@@ -3,7 +3,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { LocalName } from '../enums/localName';
 import { Interventions } from '../interfaces/Interventions';
 import { Utilisateurs } from '../interfaces/Utilisateurs';
-import { StorageService } from './storage.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { StorageService } from './storage.service';
 export class FirebaseService {
 
   constructor(public firestore : AngularFirestore,
-              private storage : StorageService) { }
+              private storage : Storage) { }
 
   public async post(collectionName : LocalName, data : any){
     
@@ -32,7 +32,7 @@ export class FirebaseService {
                      parseData.documentId = data.payload.doc.id;                     
                      alldata.push(parseData)
                    }
-                   this.storage.postDatas(collectionName, alldata)
+                   this.storage.set(collectionName, alldata)
                  })
   }
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
-import { LocalName } from '../enums/localName';
 import { StorageService } from './storage.service';
 
 @Injectable({
@@ -9,8 +8,7 @@ import { StorageService } from './storage.service';
 export class UtilityService {
 
   constructor(private route : NavController,
-              private alertController : AlertController,
-              private storage : StorageService) { }
+              private alertController : AlertController) { }
 
   public navigateTo(url : string){
     this.route.navigateRoot(url);
@@ -39,10 +37,6 @@ export class UtilityService {
 
   public returnInternetConnexion() : boolean{
     return window.navigator.onLine;
-  }
-
-  public async getConnectInfo(){
-    return await this.storage.get(LocalName.Connect);
   }
 
 }

@@ -63,7 +63,6 @@ export class InterventionsListeComponent implements OnInit {
               objet : response.objet,
               description : response.description,
               etat : EtatIntervention.Nouveau,
-              observations : [],
               createdBy : null,
               createdOn : await new Date(),
               modifiedBy : null,
@@ -121,7 +120,8 @@ export class InterventionsListeComponent implements OnInit {
       {
         type : 'radio',
         label : EtatIntervention.Nouveau,
-        value : EtatIntervention.Nouveau
+        value : EtatIntervention.Nouveau,
+        checked : true
       },
       {
         type : 'radio',
@@ -191,7 +191,6 @@ export class InterventionsListeComponent implements OnInit {
               objet : response.objet,
               description : response.description,
               etat : interventions.etat,
-              observations : interventions.observations,
               createdBy : interventions.createdBy,
               createdOn : interventions.createdOn,
               modifiedBy : interventions.modifiedBy,

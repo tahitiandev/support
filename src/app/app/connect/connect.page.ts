@@ -41,19 +41,17 @@ export class ConnectPage implements OnInit {
 
       if(isUtilisateursExiste.password === password){
         
-        const validation = {
-          id : 0,
-          autorisation : true,
-          utilisateur : await this.utilisateursService.getUtilisateurByLogin(data['username'])
-        }
+        const infoConnexion = [
+          {
+            id : 0,
+            autorisation : true,
+            utilisateur : await this.utilisateursService.getUtilisateurByLogin(data['username'])
+          }
+        ]
 
         await this.storage.resetLocalStorage(LocalName.Connect);
-        await this.storage.postData(
-          LocalName.Connect,
-          validation
-        )
-
-        this.utility.navigateTo('/')
+        await this.storage.connexion(infoConnexion);
+        this.utility.navigateTo('/');
       }
 
     }else{
@@ -66,17 +64,7 @@ export class ConnectPage implements OnInit {
   }
 
   private async deconnexion(){
-    const validation = {
-      id : 0,
-      autorisation : false,
-      utilisateur : null
-    }
-
-    await this.storage.resetLocalStorage(LocalName.Connect);
-    await this.storage.postData(
-      LocalName.Connect,
-      validation
-    )
+    await this.storage.deconnexion();
   }
 
   public async postUtilisateur(){

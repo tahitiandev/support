@@ -7,7 +7,6 @@ export interface Interventions {
     objet : string;
     description : string;
     etat : EtatIntervention;
-    observations : Array<Observations>;
     createdBy : string;
     createdOn : Date;
     modifiedBy? : string;
