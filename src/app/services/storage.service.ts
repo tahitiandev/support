@@ -27,6 +27,16 @@ export class StorageService {
     }
   }
 
+  public async initLocalNameForObject(localName: LocalName){
+    const data = await this.get(localName);
+    if(data === null){
+      await this.storage.set(
+        localName,
+        {}
+      )
+    }
+  }
+
   public async postDatas(localName : LocalName, data : Array<any>){
     await this.storage.set(localName, data);
   }

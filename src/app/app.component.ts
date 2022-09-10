@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
     await this.setObservations();
     await this.setConnect();
     await this.connexion();
+    await this.setFiltre();
   }
 
   private async setUtilisateurs(){
@@ -44,6 +45,10 @@ export class AppComponent implements OnInit {
 
   private async setConnect(){
     await this.storage.initLocalName(LocalName.Connect, true);    
+  }
+
+  private async setFiltre(){
+    await this.storage.initLocalNameForObject(LocalName.Filtres);    
   }
 
   public async connexion(){

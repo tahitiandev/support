@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, AlertInput } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
 import { Interventions } from 'src/app/interfaces/Interventions';
@@ -16,6 +16,8 @@ export class InterventionsListeComponent implements OnInit {
 
   interventions : Array<Interventions> = [];
   @Output() interventionOutput = new EventEmitter<Interventions>();
+  @Input() interventionListeInput;
+  etatTermineActif : boolean = false;
 
   constructor(private interventionService : InterventionsService,
               private alertController : AlertController,
@@ -27,8 +29,20 @@ export class InterventionsListeComponent implements OnInit {
   }
 
   private async refresh(){
-    const interventions = await this.get();
-    this.interventions = interventions;
+    if(this.interventionListeInput !== undefined){
+      const intervention = await this.interventionService.getInterventionByUtilisateurAndEtat(
+        +this.interventionListeInput[0],
+        this.interventionListeInput[1],
+      )
+      this.interventions = intervention
+    }else{
+      const interventions : Array<Interventions> = await this.get();
+      if(this.etatTermineActif){
+        this.interventions = interventions;
+      }else{
+        this.interventions = interventions.filter(interventions => interventions.etat !== EtatIntervention.Termine);
+      }
+    }
   }
 
   public async get(){
@@ -219,6 +233,11 @@ export class InterventionsListeComponent implements OnInit {
 
   public emitIntervention(intervention : Interventions){
     this.interventionOutput.emit(intervention);
+  }
+
+  public filtreEtat(){
+    this.etatTermineActif = !this.etatTermineActif;
+    this.refresh();
   }
 
 }

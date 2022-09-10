@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EtatIntervention } from '../enums/EtatsIntervention';
 import { LocalName } from '../enums/localName';
 import { Interventions } from '../interfaces/Interventions';
 import { StorageService } from './storage.service';
@@ -12,6 +13,14 @@ export class InterventionsService {
 
   public async get(){
     return await this.storage.get(LocalName.Interventions);
+  }
+
+  public async getInterventionByUtilisateurAndEtat(utilisateurId : number, etat : EtatIntervention){
+    const interventions : Array<Interventions> = await this.get();
+    const interventionByEtat = await interventions.filter(intervention => intervention.etat === etat);
+    const interventionByUtilisateur = await interventionByEtat.filter(intervention => intervention.intervenant.id === utilisateurId);
+    return interventionByUtilisateur
+    
   }
 
   public async postIntervention(intervention : Interventions){

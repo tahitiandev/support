@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
 import { LocalName } from 'src/app/enums/localName';
 import { Interventions } from 'src/app/interfaces/Interventions';
@@ -12,6 +13,7 @@ interface InterventionParUtilisateur {
   utilisateur : string;
   nombre : number;
   etat : EtatIntervention;
+  idIntervention : Array<number>;
 }
 
 
@@ -24,10 +26,12 @@ export class HomePage implements OnInit {
 
   interventionParUtilisateur = [];
   @Output() refreshNavBarOutput = new EventEmitter();
+  homeActif : boolean = true;
 
   constructor(private storage : StorageService,
               private interventionsService : InterventionsService,
-              private utiliateursService : UtilisateursService) { }
+              private utiliateursService : UtilisateursService,
+              private navigate : NavController) { }
 
   ngOnInit() {
     this.refresh();
@@ -60,25 +64,31 @@ export class HomePage implements OnInit {
       var tempResult = {
         utilisateur : utilisateur,
         totalNouveau : 0,
+        idNouveau : [],
         totalEnCours : 0,
-        totalTermine : 0
+        idEncours : [],
+        totalTermine : 0,
+        idTermine : [],
       }
 
       for(let data of resultNouveau){
         if(data.utilisateur === utilisateur.libelle){
-          tempResult.totalNouveau = data.nombre
+          tempResult.totalNouveau = data.nombre;
+          tempResult.idNouveau = data.idIntervention;
         }
       }
-
+      
       for(let data of resultEnCours){
         if(data.utilisateur === utilisateur.libelle){
           tempResult.totalEnCours = data.nombre
+          tempResult.idEncours = data.idIntervention;
         }
       }
-
+      
       for(let data of resultTermine){
         if(data.utilisateur === utilisateur.libelle){
           tempResult.totalTermine = data.nombre
+          tempResult.idTermine = data.idIntervention;
         }
       }
 
@@ -100,13 +110,15 @@ export class HomePage implements OnInit {
       result.push({
         utilisateur : utilisateur.libelle,
         nombre : 0,
-        etat : EtatIntervention
+        etat : EtatIntervention,
+        idIntervention : []
       })
 
       for(let intervention of interventions){
         if(intervention.intervenant.libelle === utilisateur.libelle){
           if(intervention.etat === EtatIntervention){
             result[index].nombre++
+            result[index].idIntervention.push(intervention.id);
           }
         }
       }
@@ -121,6 +133,10 @@ export class HomePage implements OnInit {
   public refreshNavBar(event){
     this.refreshNavBarOutput.emit();
     event.target.complete();
+  }
+
+  public viewDetail(utilisateur, etat){
+    this.navigate.navigateRoot('interventions/' + utilisateur + '/' + etat);
   }
 
 }

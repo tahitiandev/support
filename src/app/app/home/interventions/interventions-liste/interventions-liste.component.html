@@ -1,11 +1,11 @@
 <div style="margin: 20px;">
-  <ion-list *ngFor="let intervention of interventions; let id = index">
+  <ion-list *ngFor="let intervention of interventions">
 
   
     <ion-item-sliding>
       <ion-item (click)="emitIntervention(intervention)">
         <ion-label>
-          <ion-chip>{{ id }}</ion-chip>
+          <ion-chip>{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
         </ion-label>
         <ion-chip slot="end">{{ intervention.etat }}</ion-chip>
@@ -19,6 +19,10 @@
   
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="this.filtreEtat()">
+      <ion-icon name="filter-outline"></ion-icon>
+    </ion-fab-button>
+    <br>
     <ion-fab-button (click)="this.post()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

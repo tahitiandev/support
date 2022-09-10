@@ -9,28 +9,23 @@
 
 <ion-content>
 
-  <table>
-    <tr>
-      <th>Intervenant</th>
-      <th>Nouveau</th>
-      <th>En cours</th>
-      <th>Terminé</th>
-    </tr>
-    <tr *ngFor="let data of interventionParUtilisateur">
-      <td>{{ data.utilisateur.libelle }}</td>
-      <td>{{ data.totalNouveau }}</td>
-      <td>{{ data.totalEnCours }}</td>
-      <td>{{ data.totalTermine }}</td>
-    </tr>
-  </table>
-
-  <ion-refresher slot="fixed" (ionRefresh)="refreshNavBar($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-
-
-
-
+ <table>
+   <tr>
+     <th>Intervenant</th>
+     <th>Nouveau</th>
+     <th>En cours</th>
+     <th>Terminé</th>
+   </tr>
+   <tr *ngFor="let data of interventionParUtilisateur">
+     <td>{{ data.utilisateur.libelle }}</td>
+     <td class="td-click" (click)="this.viewDetail(data.utilisateur.id, 'Nouveau')">{{ data.totalNouveau }}</td>
+     <td class="td-click" (click)="this.viewDetail(data.utilisateur.id, 'En cours')">{{ data.totalEnCours }}</td>
+     <td class="td-click" (click)="this.viewDetail(data.utilisateur.id, 'Terminé')">{{ data.totalTermine }}</td>
+   </tr>
+ </table>
+ 
+ <ion-refresher slot="fixed" (ionRefresh)="refreshNavBar($event)">
+   <ion-refresher-content></ion-refresher-content>
+ </ion-refresher>
 
 </ion-content>

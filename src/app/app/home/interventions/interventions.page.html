@@ -11,6 +11,7 @@
   
   <app-interventions-liste 
       *ngIf="interventionsListeActif"
+      [interventionListeInput]="interventionListeInput"
       (interventionOutput)="getInterventionOutput($event)"></app-interventions-liste>
       
   <app-interventions-details

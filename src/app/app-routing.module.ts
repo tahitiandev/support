@@ -15,13 +15,18 @@ const routes: Routes = [
     loadChildren: () => import('./app/home/interventions/interventions.module').then( m => m.InterventionsPageModule)
   },
   {
+    path: 'interventions/:utilisateurId/:etat',
+    loadChildren: () => import('./app/home/interventions/interventions.module').then( m => m.InterventionsPageModule)
+  },
+  {
     path: 'connect',
     loadChildren: () => import('./app/connect/connect.module').then( m => m.ConnectPageModule)
   },
   {
     path: 'home',
     loadChildren: () => import('./app/home/home.module').then( m => m.HomePageModule)
-  },  {
+  },
+  {
     path: 'settings',
     loadChildren: () => import('./app/params/settings/settings.module').then( m => m.SettingsPageModule)
   }
