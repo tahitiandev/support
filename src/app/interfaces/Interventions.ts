@@ -16,5 +16,6 @@ export interface Interventions {
     firebase : boolean;
     documentId : string;
     intervenant : Utilisateurs;
+    timer? : number;
 }
 

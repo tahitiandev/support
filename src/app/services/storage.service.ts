@@ -80,13 +80,10 @@ export class StorageService {
   public async put(localName : LocalName, data){
 
     // Partie localstorage
-    const all = await this.get(localName);
-
-    const index = await this.getIndex(localName, data);
-    data.modifiedOn = await new Date();
-    all[index] = data;
-
-    await this.postDatas(localName, all);
+    this.putLocalStorageOnly(
+      localName,
+      data
+    )
 
     // Partie firebase
     await this.firebase.put(
@@ -95,6 +92,19 @@ export class StorageService {
     )
 
   }
+
+  public async putLocalStorageOnly(localName : LocalName, data){
+
+    const all = await this.get(localName);
+    const index = await this.getIndex(localName, data);
+    data.modifiedOn = await new Date();
+    all[index] = data;
+
+    await this.postDatas(localName, all);
+
+  }
+
+  
 
   public async delete(localName : LocalName, data){
     // Partie localstorage

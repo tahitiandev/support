@@ -2,12 +2,30 @@
   <ion-list *ngFor="let intervention of interventions">
 
   
-    <ion-item-sliding>
+    <ion-item-sliding #slidingItem>
+
+      <ion-item-options side="start">
+        <ion-item-option
+          *ngIf="!chronoActif" 
+          (click)="startChrono(intervention, slidingItem)">Start
+        </ion-item-option>
+        <ion-item-option
+          style="background: red;" 
+          *ngIf="chronoActif"
+          [disabled]="chronoActif && intervention.id !== chronoActifInterventionId" 
+          (click)="stopChrono(intervention,slidingItem)">Stop</ion-item-option>
+      </ion-item-options>
+
       <ion-item (click)="emitIntervention(intervention)">
         <ion-label>
           <ion-chip>{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
         </ion-label>
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined"
+          color="warning"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
         <ion-chip slot="end">{{ intervention.etat }}</ion-chip>
       </ion-item>
       <ion-item-options side="end">

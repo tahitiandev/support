@@ -57,4 +57,39 @@ export class InterventionsService {
     return response;
   }
 
+  compteur : number = 0;
+  compteurActif : boolean = false;
+
+  public startChrono(intervention : Interventions){
+    if(intervention.timer !== undefined){
+      this.compteur = intervention.timer;
+    }else{
+      this.compteur = 0;
+    }
+    this.compteurActif = true;
+    const eventChrono = setInterval(() => {
+      if(this.compteurActif){
+        intervention.timer = this.compteur;
+        this.storage.put(
+          LocalName.Interventions,
+          intervention
+          );
+        this.compteur++
+      }else{
+        clearInterval(eventChrono);
+      }
+    },1000);
+
+    eventChrono
+    
+  }
+
+  public stopChrono(intervention : Interventions){
+    this.compteurActif = false;
+
+    intervention.timer = this.compteur;
+    this.put(intervention);
+    
+  }
+
 }

@@ -213,7 +213,8 @@ export class InterventionsListeComponent implements OnInit {
               deletedOn : interventions.deletedOn,
               firebase : interventions.firebase,
               documentId : interventions.documentId,
-              intervenant : null
+              intervenant : null,
+              timer : 0
             }
 
             await this.interventionService.put(intervention);
@@ -238,6 +239,29 @@ export class InterventionsListeComponent implements OnInit {
   public filtreEtat(){
     this.etatTermineActif = !this.etatTermineActif;
     this.refresh();
+  }
+
+  chronoActif : boolean = false;
+  chronoActifInterventionId : number;
+
+  public startChrono(intervention : Interventions, slidingItem){
+    this.chronoActif = true;
+    this.chronoActifInterventionId = intervention.id;
+    this.interventionService.startChrono(intervention);
+    slidingItem.close();
+  }
+  
+  public stopChrono(intervention : Interventions,slidingItem){
+    this.chronoActif = false;
+    this.interventionService.stopChrono(intervention);
+    slidingItem.close();
+  }
+
+  public convertSecondToTime(seconds){
+    var date = new Date(null);
+    date.setSeconds(seconds); // specify value for SECONDS here
+    var result = date.toISOString().substr(11, 8);
+    return result;
   }
 
 }
