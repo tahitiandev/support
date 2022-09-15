@@ -17,20 +17,46 @@
       </ion-item-options>
 
       <ion-item (click)="emitIntervention(intervention)">
-        <ion-label>
+
+        <ion-label class="item-hover">
           <ion-chip>{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
         </ion-label>
+        
+        <!-- TIMER -->
         <ion-chip 
-          *ngIf="intervention.timer !== undefined"
+          *ngIf="intervention.timer !== undefined && chronoActif && intervention.id !== chronoActifInterventionId"
           color="warning"
           slot="end">{{ convertSecondToTime(intervention.timer) }}
         </ion-chip>
-        <ion-chip slot="end">{{ intervention.etat }}</ion-chip>
+
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined && !chronoActif"
+          color="warning"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
+
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined && chronoActif && intervention.id === chronoActifInterventionId"
+          color="tertiary"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
+
+        <!-- ETAT -->
+        <ion-chip *ngIf="intervention.etat === 'Nouveau'"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="secondary"
+                  *ngIf="intervention.etat === 'En cours'"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="success"
+                  *ngIf="intervention.etat === 'Terminé'"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option (click)="update(intervention)">Modifier</ion-item-option>
-        <ion-item-option style="background: red;" (click)="delete(intervention)">Supprimer</ion-item-option>
+        <ion-item-option style="background-color: green;" (click)="updateEtat(intervention,slidingItem)">Etat</ion-item-option>
+        <ion-item-option (click)="update(intervention,slidingItem)">Modifier</ion-item-option>
+        <ion-item-option style="background: red;" (click)="delete(intervention,slidingItem)">Supprimer</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, AlertInput } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
+import { Filtre } from 'src/app/enums/Filtre';
 import { Interventions } from 'src/app/interfaces/Interventions';
 import { Utilisateurs } from 'src/app/interfaces/Utilisateurs';
 import { InterventionsService } from 'src/app/services/interventions.service';
@@ -29,6 +30,8 @@ export class InterventionsListeComponent implements OnInit {
   }
 
   private async refresh(){
+    const filtre = await this.utility.getFiltre();
+    this.etatTermineActif = filtre.EtatIntervention;
     if(this.interventionListeInput !== undefined){
       const intervention = await this.interventionService.getInterventionByUtilisateurAndEtat(
         +this.interventionListeInput[0],
@@ -170,12 +173,13 @@ export class InterventionsListeComponent implements OnInit {
     await alert.present();
   }
 
-  public async delete(intervention : Interventions){
+  public async delete(intervention : Interventions,slidingItem){
     await this.interventionService.delete(intervention);
     await this.refresh();
+    slidingItem.close();
   }
 
-  public async update(interventions : Interventions){
+  public async update(interventions : Interventions,slidingItem){
     const alert = await this.alertController.create({
       header: 'Créer un utilisateur',
       inputs : [
@@ -219,6 +223,7 @@ export class InterventionsListeComponent implements OnInit {
 
             await this.interventionService.put(intervention);
             await this.refresh();
+            slidingItem.close();
 
           }
         }
@@ -236,8 +241,24 @@ export class InterventionsListeComponent implements OnInit {
     this.interventionOutput.emit(intervention);
   }
 
-  public filtreEtat(){
-    this.etatTermineActif = !this.etatTermineActif;
+  public async filtreEtat(){
+    const filtre = await this.utility.getFiltre();
+
+    if(filtre.EtatIntervention === undefined){
+      filtre.EtatIntervention = false;
+      this.utility.setFiltre(filtre);
+      this.etatTermineActif = false;
+    }
+    if(filtre.EtatIntervention){
+      filtre.EtatIntervention = false;
+      this.utility.setFiltre(filtre);
+      this.etatTermineActif = false;
+    }else{
+      filtre.EtatIntervention = true;
+      this.utility.setFiltre(filtre);
+      this.etatTermineActif = true;
+    }
+
     this.refresh();
   }
 
@@ -262,6 +283,52 @@ export class InterventionsListeComponent implements OnInit {
     date.setSeconds(seconds); // specify value for SECONDS here
     var result = date.toISOString().substr(11, 8);
     return result;
+  }
+
+  public async updateEtat(intervention : Interventions,slidingItem){
+    const alert = await this.alertController.create({
+      header: 'Modifier l\'etat',
+      inputs : [
+        {
+          type : 'radio',
+          name : EtatIntervention.Nouveau,
+          label : EtatIntervention.Nouveau,
+          checked : intervention.etat === EtatIntervention.Nouveau ? true : false,
+          value : EtatIntervention.Nouveau
+        },
+        {
+          type : 'radio',
+          name : EtatIntervention.EnCours,
+          label : EtatIntervention.EnCours,
+          checked : intervention.etat === EtatIntervention.EnCours ? true : false,
+          value : EtatIntervention.EnCours
+        },
+        {
+          type : 'radio',
+          name : EtatIntervention.Termine,
+          label : EtatIntervention.Termine,
+          checked : intervention.etat === EtatIntervention.Termine ? true : false,
+          value : EtatIntervention.Termine
+        }
+      ],
+      buttons: [
+        {
+          text : 'Valider',
+          handler : async (EtatIntervention : EtatIntervention) => {
+
+            if(EtatIntervention !== intervention.etat){
+              intervention.etat = EtatIntervention
+              await this.interventionService.put(intervention);
+              slidingItem.close();
+              this.refresh();
+            }
+
+          }
+        }
+      ],
+    });
+
+    await alert.present();
   }
 
 }

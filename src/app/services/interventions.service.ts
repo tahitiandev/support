@@ -61,6 +61,12 @@ export class InterventionsService {
   compteurActif : boolean = false;
 
   public startChrono(intervention : Interventions){
+
+    if(intervention.etat === EtatIntervention.Nouveau){
+      intervention.etat = EtatIntervention.EnCours;
+      this.put(intervention);
+    }
+
     if(intervention.timer !== undefined){
       this.compteur = intervention.timer;
     }else{
