@@ -67,7 +67,8 @@ export class AppComponent implements OnInit {
     if(connect[0].autorisation){
       this.navBarFirst = [
         { title: 'Accueil', url: '/home', icon: 'home' },
-        { title: 'Interventions', url: '/interventions', icon: 'hammer' }
+        { title: 'Tâches', url: '/interventions', icon: 'hammer' },
+        { title: 'Gestion du temps', url: '/temps', icon: 'timer' }
       ];
       
       this.navBarreSecond = [

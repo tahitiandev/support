@@ -1,0 +1,14 @@
+table, td, th {
+    border: 2px solid rgb(76, 76, 88);
+  }
+  
+  table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: auto;
+    margin-top: 60px;
+    text-align: center;
+  }
+  td, th{
+      padding: 10px;
+  }

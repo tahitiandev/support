@@ -46,6 +46,7 @@ export class InterventionsListeComponent implements OnInit {
         this.interventions = interventions.filter(interventions => interventions.etat !== EtatIntervention.Termine);
       }
     }
+    console.log(this.interventions)
   }
 
   public async get(){

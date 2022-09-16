@@ -35,6 +35,7 @@ export class InterventionsDetailsComponent implements OnInit {
   private async refresh(){
     const observations = await this.getObservations();
     this.observations = observations;
+    document.querySelector('.observations-content').innerHTML;
   }
 
   public async getObservations(){

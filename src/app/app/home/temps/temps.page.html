@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestion du temps</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div style="padding: 20px;">
+
+    <form [formGroup]="this.formulaire">
+      <ion-item>
+        <ion-label position="floating">Renseigner une date</ion-label>
+        <ion-input type="date" (ionChange)="getDate()" formControlName="dateSelected"></ion-input>
+      </ion-item>
+    </form>
+
+
+    <h2 *ngIf="debutPeriode !== undefined"
+        style="text-align: center; padding-top : 20px;">Période du {{ debutPeriode }} au {{ finPeriode }}</h2>
+
+    <table *ngIf="debutPeriode !== undefined">
+      <tr>
+        <th>Tâches</th>
+        <th>Temps</th>
+      </tr>
+      <tr *ngFor="let intervention of interventions">
+        <th style="text-align: left; padding : 10px;">{{ intervention.objet }}</th>
+        <th>{{ convertSecondToTime(intervention.timer) }}</th>
+      </tr>
+
+      <tr>
+        <th style="text-align: right;">Total : </th>
+        <th>{{ convertSecondToTime(tempsTotal) }}</th>
+      </tr>
+
+    </table>
+
+  </div>
+
+</ion-content>
