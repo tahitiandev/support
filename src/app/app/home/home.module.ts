@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { InterventionsListeComponent } from './interventions/interventions-liste/interventions-liste.component';
+import { RefeshGetFirebaseComponent } from 'src/app/utility/refesh-get-firebase/refesh-get-firebase.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { InterventionsListeComponent } from './interventions/interventions-liste
   ],
   declarations: [
     HomePage,
-    InterventionsListeComponent
+    InterventionsListeComponent,
+    RefeshGetFirebaseComponent
   ]
 })
 export class HomePageModule {}
