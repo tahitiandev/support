@@ -18,6 +18,9 @@ import { RefeshGetFirebaseComponent } from '../../utility/refesh-get-firebase/re
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [ConnectPage, RefeshGetFirebaseComponent]
+  declarations: [
+    ConnectPage,
+    RefeshGetFirebaseComponent
+  ]
 })
 export class ConnectPageModule {}

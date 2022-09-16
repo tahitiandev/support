@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { TempsPageRoutingModule } from './temps-routing.module';
 
 import { TempsPage } from './temps.page';
+import { RefeshGetFirebaseComponent } from 'src/app/utility/refesh-get-firebase/refesh-get-firebase.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import { TempsPage } from './temps.page';
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [TempsPage]
+  declarations: [
+    TempsPage,
+    RefeshGetFirebaseComponent
+  ]
 })
 export class TempsPageModule {}

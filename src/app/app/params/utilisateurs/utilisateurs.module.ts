@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { UtilisateursPageRoutingModule } from './utilisateurs-routing.module';
 
 import { UtilisateursPage } from './utilisateurs.page';
-
+import { RefeshGetFirebaseComponent } from 'src/app/utility/refesh-get-firebase/refesh-get-firebase.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +15,9 @@ import { UtilisateursPage } from './utilisateurs.page';
     IonicModule,
     UtilisateursPageRoutingModule
   ],
-  declarations: [UtilisateursPage]
+  declarations: [
+    UtilisateursPage,
+    RefeshGetFirebaseComponent
+  ]
 })
 export class UtilisateursPageModule {}
