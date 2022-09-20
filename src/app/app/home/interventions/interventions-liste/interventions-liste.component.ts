@@ -32,6 +32,7 @@ export class InterventionsListeComponent implements OnInit {
   private async refresh(){
     const filtre = await this.utility.getFiltre();
     this.etatTermineActif = filtre.EtatIntervention;
+
     if(this.interventionListeInput !== undefined){
       const intervention = await this.interventionService.getInterventionByUtilisateurAndEtat(
         +this.interventionListeInput[0],
@@ -46,11 +47,10 @@ export class InterventionsListeComponent implements OnInit {
         this.interventions = interventions.filter(interventions => interventions.etat !== EtatIntervention.Termine);
       }
     }
-    console.log(this.interventions)
   }
 
   public async get(){
-    return await this.interventionService.get();
+    return await this.interventionService.get(true);
   }
 
   public async post(){

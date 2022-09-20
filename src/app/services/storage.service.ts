@@ -58,14 +58,18 @@ export class StorageService {
     }
   }
 
-  public async get(localName : LocalName){
+  public async get(localName : LocalName, orderDesc? : boolean){
     const response = await this.storage.get(localName);
     if(response === null){
       return response;
     }
     else{
       const result = response.filter(data => data.deletedOn === null);
-      return this.orderById(result);
+      if(orderDesc){
+        return this.orderByIdDesc(result);
+      }else{
+        return this.orderById(result);
+      }
     }
   }
 
@@ -130,6 +134,19 @@ export class StorageService {
       let x  = a.id ;
       let y  = b.id;
       if(x < y){
+        return -1;
+      }else{
+        return 1;
+      }
+      return 0;
+    })
+  
+  }
+  private orderByIdDesc(data : Array<any>){
+    return data.sort((a,b) => {
+      let x  = a.id ;
+      let y  = b.id;
+      if(x > y){
         return -1;
       }else{
         return 1;

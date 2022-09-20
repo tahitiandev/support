@@ -39,7 +39,8 @@ export class TempsPage implements OnInit {
     const interventionsTimerNotNull : Array<Interventions> = await interventions.filter(interventions => interventions.timer !== undefined);
     const interventionsDateDebut = await interventionsTimerNotNull.filter(interventions => new Date(interventions.modifiedOn) >= debut);
     const interventionsDateFin = await interventionsDateDebut.filter(interventions => new Date(interventions.modifiedOn) <= fin);
-    return interventionsDateFin;
+    console.log(interventionsTimerNotNull)
+    return interventionsTimerNotNull;
   }
 
   public async getDate(){

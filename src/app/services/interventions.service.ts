@@ -11,12 +11,16 @@ export class InterventionsService {
 
   constructor(private storage : StorageService) { }
 
-  public async get(){
-    return await this.storage.get(LocalName.Interventions);
+  public async get(orderByDesc ? : boolean){
+    if(orderByDesc){
+      return await this.storage.get(LocalName.Interventions, orderByDesc);
+    }else{
+      return await this.storage.get(LocalName.Interventions);
+    }
   }
 
   public async getInterventionByUtilisateurAndEtat(utilisateurId : number, etat : EtatIntervention){
-    const interventions : Array<Interventions> = await this.get();
+    const interventions : Array<Interventions> = await this.get(true);
     const interventionByEtat = await interventions.filter(intervention => intervention.etat === etat);
     const interventionByUtilisateur = await interventionByEtat.filter(intervention => intervention.intervenant.id === utilisateurId);
     return interventionByUtilisateur
