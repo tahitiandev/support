@@ -12,3 +12,12 @@ table, td, th {
   td, th{
       padding: 10px;
   }
+.tr-gaffa{
+  transition: 1s;
+  cursor: pointer;
+}
+.tr-gaffa:hover{
+  background: blueviolet;
+  transition: 1s;
+  cursor: pointer;
+}

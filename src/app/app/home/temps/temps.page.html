@@ -27,8 +27,10 @@
         <th>Tâches</th>
         <th>Temps</th>
       </tr>
-      <tr *ngFor="let intervention of interventions">
-        <th style="text-align: left; padding : 10px;">{{ intervention.objet }}</th>
+      <tr *ngFor="let intervention of interventions"
+          class="tr-gaffa"
+          (click)="gaffa(intervention)">
+        <th style="text-align: left; padding : 10px;">{{ intervention.id }} {{ intervention.objet }}</th>
         <th>{{ convertSecondToTime(intervention.timer) }}</th>
       </tr>
 

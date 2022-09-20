@@ -17,5 +17,6 @@ export interface Interventions {
     documentId : string;
     intervenant : Utilisateurs;
     timer? : number;
+    gaffa : boolean;
 }
 

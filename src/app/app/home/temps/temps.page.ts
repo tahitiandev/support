@@ -39,8 +39,8 @@ export class TempsPage implements OnInit {
     const interventionsTimerNotNull : Array<Interventions> = await interventions.filter(interventions => interventions.timer !== undefined);
     const interventionsDateDebut = await interventionsTimerNotNull.filter(interventions => new Date(interventions.modifiedOn) >= debut);
     const interventionsDateFin = await interventionsDateDebut.filter(interventions => new Date(interventions.modifiedOn) <= fin);
-    console.log(interventionsTimerNotNull)
-    return interventionsTimerNotNull;
+    const interventionsGaffa : Array<Interventions> = await interventionsTimerNotNull.filter(interventions => interventions.gaffa === false);
+    return interventionsGaffa;
   }
 
   public async getDate(){
@@ -53,23 +53,29 @@ export class TempsPage implements OnInit {
       new Date(periode.dateDebut),
       new Date(periode.dateFin)
     )
-    this.interventions = result;
-    this.calculeTempsTotal(result);
+    this.interventions = await result;
+    await this.calculeTempsTotal(result);
     
     this.debutPeriode = this.utility.parseDateDDmmYYYY(periode.dateDebut);
     this.finPeriode = this.utility.parseDateDDmmYYYY(periode.dateFin);
   
   }
 
-  private calculeTempsTotal(interventions : Array<Interventions>){
+  private async calculeTempsTotal(interventions : Array<Interventions>){
     var tempsTotal = 0;
-    interventions.map(interventions => tempsTotal += interventions.timer);
+    await interventions.map(interventions => tempsTotal += interventions.timer);
     this.tempsTotal = tempsTotal;
   }
 
   convertSecondToTime(seconds){
     const result = this.utility.convertSecondToTime(seconds)
     return result;
+  }
+
+  public async gaffa(intervention : Interventions){
+    intervention.gaffa = !intervention.gaffa
+    await this.interventionService.put(intervention);
+    await this.getDate();
   }
 
 }

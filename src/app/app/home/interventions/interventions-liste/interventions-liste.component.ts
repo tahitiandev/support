@@ -89,7 +89,8 @@ export class InterventionsListeComponent implements OnInit {
               deletedOn : null,
               firebase : false,
               documentId : null,
-              intervenant : null
+              intervenant : null,
+              gaffa : false
             }
 
             await this.postChooseUser(intervention);
@@ -219,7 +220,8 @@ export class InterventionsListeComponent implements OnInit {
               firebase : interventions.firebase,
               documentId : interventions.documentId,
               intervenant : null,
-              timer : 0
+              timer : 0,
+              gaffa : interventions.gaffa
             }
 
             await this.interventionService.put(intervention);
