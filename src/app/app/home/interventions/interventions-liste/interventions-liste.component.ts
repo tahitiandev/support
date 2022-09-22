@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, AlertInput } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
-import { Filtre } from 'src/app/enums/Filtre';
+import { LocalName } from 'src/app/enums/localName';
+import { Filtres } from 'src/app/interfaces/Filtres';
 import { Interventions } from 'src/app/interfaces/Interventions';
 import { Utilisateurs } from 'src/app/interfaces/Utilisateurs';
 import { InterventionsService } from 'src/app/services/interventions.service';
@@ -18,7 +19,7 @@ export class InterventionsListeComponent implements OnInit {
   interventions : Array<Interventions> = [];
   @Output() interventionOutput = new EventEmitter<Interventions>();
   @Input() interventionListeInput;
-  etatTermineActif : boolean = false;
+  filtres : Filtres;  
 
   constructor(private interventionService : InterventionsService,
               private alertController : AlertController,
@@ -30,23 +31,56 @@ export class InterventionsListeComponent implements OnInit {
   }
 
   private async refresh(){
-    const filtre = await this.utility.getFiltre();
-    this.etatTermineActif = filtre.EtatIntervention;
 
+    // init Filtres
+    const filtres = await this.getFiltreFromStorage();
+    this.filtres = filtres;
+
+    // Si recherche par par home.ts
     if(this.interventionListeInput !== undefined){
       const intervention = await this.interventionService.getInterventionByUtilisateurAndEtat(
         +this.interventionListeInput[0],
         this.interventionListeInput[1],
       )
-      this.interventions = intervention
-    }else{
-      const interventions : Array<Interventions> = await this.get();
-      if(this.etatTermineActif){
-        this.interventions = interventions;
-      }else{
-        this.interventions = interventions.filter(interventions => interventions.etat !== EtatIntervention.Termine);
-      }
+      await this.filtre(intervention);
     }
+    
+    // Si recherche initialise
+    if(this.interventionListeInput === undefined){
+      const interventions : Array<Interventions> = await this.get();
+      await this.filtre(interventions);
+    }
+  }
+
+  private async filtre(interventions : Array<Interventions>){
+    if(this.filtres.Gaffa === undefined){
+      this.filtres.Gaffa = true;
+    }
+
+    if(this.filtres.Gaffa){
+      const response = await interventions.filter(intervention => !intervention.gaffa);
+      this.interventions = this.utility.orderByIdDesc(response);
+    }
+
+    if(!this.filtres.Gaffa){
+      this.interventions = interventions;
+    }
+
+    if(this.filtres.Etats.length > 0){
+      
+      const response : Array<Interventions> = [];
+      
+      for(let etat of this.filtres.Etats){
+        await this.interventions.map(intervention => {
+          if(intervention.etat === etat){
+            response.push(intervention);
+          }
+        });
+      }
+
+      this.interventions = this.utility.orderByIdDesc(response);
+    }
+
   }
 
   public async get(){
@@ -106,12 +140,14 @@ export class InterventionsListeComponent implements OnInit {
   private async postChooseUser(intervention : Interventions){
 
     const utilisateurs :  Array<Utilisateurs> = await this.utilisateurService.get();
+    const user : Utilisateurs = await this.utility.getUserActif();
 
     const inputs : Array<AlertInput> = [];
     await utilisateurs.map(utilisateurs => inputs.push({
       type : 'radio',
       label : utilisateurs.libelle,
-      value : utilisateurs
+      value : utilisateurs,
+      checked : user.id === utilisateurs.id ? true : false
     }))
 
     const alert = await this.alertController.create({
@@ -244,27 +280,6 @@ export class InterventionsListeComponent implements OnInit {
     this.interventionOutput.emit(intervention);
   }
 
-  public async filtreEtat(){
-    const filtre = await this.utility.getFiltre();
-
-    if(filtre.EtatIntervention === undefined){
-      filtre.EtatIntervention = false;
-      this.utility.setFiltre(filtre);
-      this.etatTermineActif = false;
-    }
-    if(filtre.EtatIntervention){
-      filtre.EtatIntervention = false;
-      this.utility.setFiltre(filtre);
-      this.etatTermineActif = false;
-    }else{
-      filtre.EtatIntervention = true;
-      this.utility.setFiltre(filtre);
-      this.etatTermineActif = true;
-    }
-
-    this.refresh();
-  }
-
   chronoActif : boolean = false;
   chronoActifInterventionId : number;
 
@@ -286,6 +301,34 @@ export class InterventionsListeComponent implements OnInit {
     date.setSeconds(seconds); // specify value for SECONDS here
     var result = date.toISOString().substr(11, 8);
     return result;
+  }
+
+  public async messageRefreshChrono(intervention : Interventions, slidingItem){
+    const alert = await this.alertController.create({
+      header: 'Voulez-vous réellement remettre le chrono à 0',
+      buttons: [
+        {
+          text : 'Oui',
+          handler : async () => { 
+            await this.refreshChrono(intervention,slidingItem);
+          }
+        },
+        {
+          text : 'Non',
+          handler : async () => { 
+            await this.utility.popUp('Opération annulée');
+          }
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
+  public async refreshChrono(intervention : Interventions,slidingItem){
+    await this.interventionService.refreshChrono(intervention);
+    await this.refresh();
+    slidingItem.close();
   }
 
   public async updateEtat(intervention : Interventions,slidingItem){
@@ -333,5 +376,82 @@ export class InterventionsListeComponent implements OnInit {
 
     await alert.present();
   }
+
+  private async getFiltreFromStorage(){
+    const filtres : Filtres = await this.utility.getFiltre();
+    this.filtres = filtres;
+    return filtres;
+  }
+
+  public async filtreMessage(){
+    const alert = await this.alertController.create({
+      header: 'Choisir le type de filtre',
+      buttons: [
+        {
+          text : 'Filtre par ETAT',
+          handler : async () => {
+            await this.filtreParEtat();
+          }
+        },
+        {
+          text : this.filtres.Gaffa ? 'Afficher tout' : 'Masquer les Gaffa',
+          handler : async () => {
+            this.filtres.Gaffa = !this.filtres.Gaffa;
+            await this.utility.setFiltre(this.filtres);
+            await this.refresh();
+            console.log(this.interventions)
+          }
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  public async filtreParEtat(){
+    const alert = await this.alertController.create({
+      header: 'Choisir les etat à conserver',
+      inputs : [
+        {
+          type : 'checkbox',
+          label : EtatIntervention.Nouveau,
+          value : EtatIntervention.Nouveau,
+          checked : this.filtres.Etats.filter(etat => etat === EtatIntervention.Nouveau).length > 0 ? true : false
+        },
+        {
+          type : 'checkbox',
+          label : EtatIntervention.EnCours,
+          value : EtatIntervention.EnCours,
+          checked : this.filtres.Etats.filter(etat => etat === EtatIntervention.EnCours).length > 0 ? true : false
+        },
+        {
+          type : 'checkbox',
+          label : EtatIntervention.Termine,
+          value : EtatIntervention.Termine,
+          checked : this.filtres.Etats.filter(etat => etat === EtatIntervention.Termine).length > 0 ? true : false
+        },
+      ],
+      buttons: [
+        {
+          text : 'Annuler',
+          handler : () => {
+          }
+        },
+        {
+          text : 'Valider',
+          handler : async (Etats) => {
+
+            this.filtres.Etats = Etats;
+            await this.utility.setFiltre(this.filtres);
+            await this.refresh();
+
+          }
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
 
 }

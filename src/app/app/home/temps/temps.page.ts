@@ -18,11 +18,16 @@ export class TempsPage implements OnInit {
     dateSelected : new FormControl('')
   });
   tempsTotal = 0
+  isGaffa : boolean = false;
 
   constructor(private utility : UtilityService,
               private interventionService : InterventionsService) { }
 
   ngOnInit() {
+  }
+
+  private async refresh(){
+    await this.getDate();
   }
 
   public async getPeriode(date : Date){
@@ -40,7 +45,11 @@ export class TempsPage implements OnInit {
     const interventionsDateDebut = await interventionsTimerNotNull.filter(interventions => new Date(interventions.modifiedOn) >= debut);
     const interventionsDateFin = await interventionsDateDebut.filter(interventions => new Date(interventions.modifiedOn) <= fin);
     const interventionsGaffa : Array<Interventions> = await interventionsTimerNotNull.filter(interventions => interventions.gaffa === false);
-    return interventionsGaffa;
+    if(this.isGaffa){
+      return interventionsTimerNotNull;
+    }else{
+      return interventionsGaffa;
+    }
   }
 
   public async getDate(){
@@ -75,7 +84,12 @@ export class TempsPage implements OnInit {
   public async gaffa(intervention : Interventions){
     intervention.gaffa = !intervention.gaffa
     await this.interventionService.put(intervention);
-    await this.getDate();
+    await this.refresh();
+  }
+
+  public async filtreGaffa(){
+    this.isGaffa = !this.isGaffa;
+    await this.refresh();
   }
 
 }

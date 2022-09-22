@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { LocalName } from '../enums/localName';
+import { Filtres } from '../interfaces/Filtres';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,7 @@ export class UtilityService {
     );
   }
 
-  public async setFiltre(filtres){
+  public async setFiltre(filtres : Filtres){
     await this.storage.set(
       LocalName.Filtres,
       filtres
@@ -134,6 +135,24 @@ export class UtilityService {
     date.setSeconds(seconds); // specify value for SECONDS here
     var result = date.toISOString().substr(11, 8);
     return result;
+  }
+
+  public orderByIdDesc(data : Array<any>){
+    return data.sort((a,b) => {
+      let x  = a.id ;
+      let y  = b.id;
+      if(x > y){
+        return -1;
+      }else{
+        return 1;
+      }
+      return 0;
+    })
+  }
+
+  public async getUserActif(){
+    const users = await this.storage.get(LocalName.Connect)
+    return users[0];
   }
 
 }

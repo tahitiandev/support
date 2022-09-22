@@ -102,4 +102,11 @@ export class InterventionsService {
     
   }
 
+  public async refreshChrono(intervention : Interventions){
+    intervention.timer = 0;
+    intervention.gaffa = false;
+    intervention.etat = EtatIntervention.Nouveau;
+    await this.put(intervention);
+  }
+
 }

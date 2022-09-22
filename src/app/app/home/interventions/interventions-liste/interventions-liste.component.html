@@ -14,6 +14,10 @@
           *ngIf="chronoActif"
           [disabled]="chronoActif && intervention.id !== chronoActifInterventionId" 
           (click)="stopChrono(intervention,slidingItem)">Stop</ion-item-option>
+        <ion-item-option
+          style="background: rgb(80, 10, 37);" 
+          [disabled]="chronoActif && intervention.id !== chronoActifInterventionId" 
+          (click)="messageRefreshChrono(intervention,slidingItem)">Refresh<br>Chrono</ion-item-option>
       </ion-item-options>
 
       <ion-item (click)="emitIntervention(intervention)">
@@ -63,11 +67,11 @@
   
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="this.filtreEtat()">
+    <ion-fab-button (click)="filtreMessage()">
       <ion-icon name="filter-outline"></ion-icon>
     </ion-fab-button>
     <br>
-    <ion-fab-button (click)="this.post()">
+    <ion-fab-button (click)="post()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

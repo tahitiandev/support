@@ -30,7 +30,19 @@
       <tr *ngFor="let intervention of interventions"
           class="tr-gaffa"
           (click)="gaffa(intervention)">
-        <th style="text-align: left; padding : 10px;">{{ intervention.id }} {{ intervention.objet }}</th>
+        <th style="text-align: left; padding : 10px;">
+          <ion-chip>{{ intervention.id }}</ion-chip>
+          {{ intervention.objet }}
+
+          <ion-chip *ngIf="intervention.etat === 'Nouveau'"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="secondary"
+                    *ngIf="intervention.etat === 'En cours'"
+                    slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="success"
+                    *ngIf="intervention.etat === 'Terminé'"
+                    slot="end">{{ intervention.etat }}</ion-chip>
+        </th>
         <th>{{ convertSecondToTime(intervention.timer) }}</th>
       </tr>
 
@@ -44,5 +56,11 @@
   </div>
 
   <app-refesh-get-firebase></app-refesh-get-firebase>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="this.filtreGaffa()">
+      <ion-icon name="filter-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
