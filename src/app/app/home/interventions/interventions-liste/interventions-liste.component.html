@@ -30,12 +30,14 @@
         <!-- TIMER -->
         <ion-chip 
           *ngIf="intervention.timer !== undefined && chronoActif && intervention.id !== chronoActifInterventionId"
+          class="mobile-display"
           color="warning"
           slot="end">{{ convertSecondToTime(intervention.timer) }}
         </ion-chip>
 
         <ion-chip 
           *ngIf="intervention.timer !== undefined && !chronoActif"
+          class="mobile-display"
           color="warning"
           slot="end">{{ convertSecondToTime(intervention.timer) }}
         </ion-chip>
@@ -48,12 +50,15 @@
 
         <!-- ETAT -->
         <ion-chip *ngIf="intervention.etat === 'Nouveau'"
+                  class="mobile-display"
                   slot="end">{{ intervention.etat }}</ion-chip>
         <ion-chip color="secondary"
                   *ngIf="intervention.etat === 'En cours'"
+                  class="mobile-display"
                   slot="end">{{ intervention.etat }}</ion-chip>
         <ion-chip color="success"
                   *ngIf="intervention.etat === 'Terminé'"
+                  class="mobile-display"
                   slot="end">{{ intervention.etat }}</ion-chip>
 
       </ion-item>

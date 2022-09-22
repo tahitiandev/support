@@ -10,3 +10,9 @@ ion-fab{
     transition: 1s;
     cursor: pointer;
 }
+
+@media only screen and (max-width: 768px) {
+    .mobile-display{
+        display: none;
+    }
+  }
