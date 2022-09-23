@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LocalName } from 'src/app/enums/localName';
 import { FirebaseService } from 'src/app/services/firebase.service';
 
@@ -8,6 +8,8 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   styleUrls: ['./refesh-get-firebase.component.scss'],
 })
 export class RefeshGetFirebaseComponent implements OnInit {
+
+  @Output() refreshOutput = new EventEmitter();
 
   constructor(private firebase : FirebaseService) { }
 

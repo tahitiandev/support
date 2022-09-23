@@ -10,6 +10,7 @@ import { InterventionsPage } from './interventions.page';
 import { InterventionsListeComponent } from './interventions-liste/interventions-liste.component';
 import { InterventionsDetailsComponent } from './interventions-details/interventions-details.component';
 import { RefeshGetFirebaseComponent } from 'src/app/utility/refesh-get-firebase/refesh-get-firebase.component';
+import { PopupFiltresComponent } from './interventions-list/popup-filtres/popup-filtres.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { RefeshGetFirebaseComponent } from 'src/app/utility/refesh-get-firebase/
     InterventionsPage, 
     InterventionsListeComponent,
     InterventionsDetailsComponent,
-    RefeshGetFirebaseComponent
+    RefeshGetFirebaseComponent,
+    PopupFiltresComponent
   ]
 })
 export class InterventionsPageModule {}
