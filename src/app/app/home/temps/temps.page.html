@@ -39,6 +39,9 @@
           <ion-chip color="secondary"
                     *ngIf="intervention.etat === 'En cours'"
                     slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="secondary"
+                    *ngIf="intervention.etat === 'En attente'"
+                    slot="end">{{ intervention.etat }}</ion-chip>
           <ion-chip color="success"
                     *ngIf="intervention.etat === 'Terminé'"
                     slot="end">{{ intervention.etat }}</ion-chip>

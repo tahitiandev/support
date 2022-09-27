@@ -107,23 +107,27 @@ export class HomePage implements OnInit {
 
     for(let utilisateur of utilisateurs){
 
-      result.push({
-        utilisateur : utilisateur.libelle,
-        nombre : 0,
-        etat : EtatIntervention,
-        idIntervention : []
-      })
-
-      for(let intervention of interventions){
-        if(intervention.intervenant.libelle === utilisateur.libelle){
-          if(intervention.etat === EtatIntervention){
-            result[index].nombre++
-            result[index].idIntervention.push(intervention.id);
+      try{
+        result.push({
+          utilisateur : utilisateur.libelle,
+          nombre : 0,
+          etat : EtatIntervention,
+          idIntervention : []
+        })
+  
+        for(let intervention of interventions){
+          if(intervention.intervenant.id === utilisateur.id){
+            if(intervention.etat === EtatIntervention){
+              result[index].nombre++
+              result[index].idIntervention.push(intervention.id);
+            }
           }
         }
+  
+        index ++
+      }catch(error) {
+        console.error(error)
       }
-
-      index ++
       
     }
 

@@ -3,9 +3,13 @@
 
   <app-popup-filtres
     *ngIf="isPopupFiltresActifs"
-    (filtreEtatOutput)="filtreParEtat()"
+    (filtreEtatOutput)="togglePopupFiltreEtat()"
     (filtreGaffaOutput)="filtreGaffa()"
   ></app-popup-filtres>
+
+  <app-popup-filtre-etat
+    (closePopUp)="closePopUpFiltreEtat()"
+    *ngIf="isPopupFiltreEtatActifs"></app-popup-filtre-etat>
 
   <ion-list *ngFor="let intervention of interventions">
 
@@ -64,6 +68,10 @@
                   *ngIf="intervention.etat === 'En cours'"
                   class="mobile-display"
                   slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="secondary"
+                  *ngIf="intervention.etat === 'En attente'"
+                  class="mobile-display"
+                  slot="end">{{ intervention.etat }}</ion-chip>
         <ion-chip color="success"
                   *ngIf="intervention.etat === 'Terminé'"
                   class="mobile-display"
@@ -79,7 +87,8 @@
   </ion-list>  
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="togglePopupFiltres()">
+    <ion-fab-button (click)="filtreMessage()">
+    <!-- <ion-fab-button (click)="togglePopupFiltres()"> -->
       <ion-icon name="filter-outline"></ion-icon>
     </ion-fab-button>
     <br>

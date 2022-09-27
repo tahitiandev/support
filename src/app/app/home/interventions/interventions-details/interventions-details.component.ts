@@ -67,6 +67,13 @@ export class InterventionsDetailsComponent implements OnInit {
         },
         {
           type : 'radio',
+          name : EtatIntervention.EnAttente,
+          label : EtatIntervention.EnAttente,
+          checked : intervention.etat === EtatIntervention.EnAttente ? true : false,
+          value : EtatIntervention.EnAttente
+        },
+        {
+          type : 'radio',
           name : EtatIntervention.Termine,
           label : EtatIntervention.Termine,
           checked : intervention.etat === EtatIntervention.Termine ? true : false,

@@ -21,6 +21,7 @@ export class InterventionsListeComponent implements OnInit {
   @Input() interventionListeInput;
   filtres : Filtres;
   isPopupFiltresActifs : boolean = false; 
+  isPopupFiltreEtatActifs : boolean = false; 
 
   constructor(private interventionService : InterventionsService,
               private alertController : AlertController,
@@ -354,6 +355,13 @@ export class InterventionsListeComponent implements OnInit {
         },
         {
           type : 'radio',
+          name : EtatIntervention.EnAttente,
+          label : EtatIntervention.EnAttente,
+          checked : intervention.etat === EtatIntervention.EnAttente ? true : false,
+          value : EtatIntervention.EnAttente
+        },
+        {
+          type : 'radio',
           name : EtatIntervention.Termine,
           label : EtatIntervention.Termine,
           checked : intervention.etat === EtatIntervention.Termine ? true : false,
@@ -386,29 +394,29 @@ export class InterventionsListeComponent implements OnInit {
     return filtres;
   }
 
-  // public async filtreMessage(){
-  //   const alert = await this.alertController.create({
-  //     header: 'Choisir le type de filtre',
-  //     buttons: [
-  //       {
-  //         text : 'Filtre par ETAT',
-  //         handler : async () => {
-  //           await this.filtreParEtat();
-  //         }
-  //       },
-  //       {
-  //         text : this.filtres.Gaffa ? 'Afficher tout' : 'Masquer les Gaffa',
-  //         handler : async () => {
-  //           this.filtres.Gaffa = !this.filtres.Gaffa;
-  //           await this.utility.setFiltre(this.filtres);
-  //           await this.refresh();
-  //         }
-  //       },
-  //     ],
-  //   });
+  public async filtreMessage(){
+    const alert = await this.alertController.create({
+      header: 'Choisir le type de filtre',
+      buttons: [
+        {
+          text : 'Filtre par ETAT',
+          handler : async () => {
+            await this.filtreParEtat();
+          }
+        },
+        {
+          text : this.filtres.Gaffa ? 'Afficher tout' : 'Masquer les Gaffa',
+          handler : async () => {
+            this.filtres.Gaffa = !this.filtres.Gaffa;
+            await this.utility.setFiltre(this.filtres);
+            await this.refresh();
+          }
+        },
+      ],
+    });
 
-  //   await alert.present();
-  // }
+    await alert.present();
+  }
 
   public async filtreGaffa(){
     this.filtres.Gaffa = !this.filtres.Gaffa;
@@ -419,6 +427,14 @@ export class InterventionsListeComponent implements OnInit {
 
   public togglePopupFiltres(){
     this.isPopupFiltresActifs = !this.isPopupFiltresActifs;
+  }
+  public togglePopupFiltreEtat(){
+    this.isPopupFiltresActifs = false;
+    this.isPopupFiltreEtatActifs = !this.isPopupFiltreEtatActifs;
+  }
+
+  public closePopUpFiltreEtat(){
+    this.isPopupFiltreEtatActifs = !this.isPopupFiltreEtatActifs;
   }
 
   public async filtreParEtat(){
@@ -437,6 +453,12 @@ export class InterventionsListeComponent implements OnInit {
           label : EtatIntervention.EnCours,
           value : EtatIntervention.EnCours,
           checked : this.filtres.Etats.filter(etat => etat === EtatIntervention.EnCours).length > 0 ? true : false
+        },
+        {
+          type : 'checkbox',
+          label : EtatIntervention.EnAttente,
+          value : EtatIntervention.EnAttente,
+          checked : this.filtres.Etats.filter(etat => etat === EtatIntervention.EnAttente).length > 0 ? true : false
         },
         {
           type : 'checkbox',
