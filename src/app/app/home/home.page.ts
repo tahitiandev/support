@@ -57,6 +57,7 @@ export class HomePage implements OnInit {
     const result = []
     const resultNouveau = await this.getInterventionByUtilisateurByEtat(EtatIntervention.Nouveau);
     const resultEnCours = await this.getInterventionByUtilisateurByEtat(EtatIntervention.EnCours);
+    const resultEnAttente = await this.getInterventionByUtilisateurByEtat(EtatIntervention.EnAttente);
     const resultTermine = await this.getInterventionByUtilisateurByEtat(EtatIntervention.Termine);
 
     for(let utilisateur of utilisateurs){
@@ -67,6 +68,8 @@ export class HomePage implements OnInit {
         idNouveau : [],
         totalEnCours : 0,
         idEncours : [],
+        totalEnAttente : 0,
+        idEnAttente : [],
         totalTermine : 0,
         idTermine : [],
       }
@@ -82,6 +85,13 @@ export class HomePage implements OnInit {
         if(data.utilisateur === utilisateur.libelle){
           tempResult.totalEnCours = data.nombre
           tempResult.idEncours = data.idIntervention;
+        }
+      }
+
+      for(let data of resultEnAttente){
+        if(data.utilisateur === utilisateur.libelle){
+          tempResult.totalEnAttente = data.nombre
+          tempResult.idEnAttente = data.idIntervention;
         }
       }
       

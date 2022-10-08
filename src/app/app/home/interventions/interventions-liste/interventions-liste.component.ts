@@ -30,6 +30,12 @@ export class InterventionsListeComponent implements OnInit {
 
   ngOnInit() {
     this.refresh();
+    this.a()
+  }
+
+  private async a(){
+    const b = await this.interventionService.get();
+    console.log(b)
   }
 
   private async refresh(){
@@ -203,6 +209,16 @@ export class InterventionsListeComponent implements OnInit {
             intervention.etat = etat;
 
             await this.interventionService.postIntervention(intervention);
+
+            // A REVOIR
+            // if(etat === EtatIntervention.EnCours){
+            //   const interv = await this.interventionService.getLastIntervention();
+            //   this.startChrono(interv);
+            //   setTimeout(async() => {
+            //     await this.refresh();
+            //   }, 2000);
+            // }
+
             await this.refresh();
 
           }
@@ -286,7 +302,7 @@ export class InterventionsListeComponent implements OnInit {
   chronoActifInterventionId : number;
   interventionActif : Interventions;
 
-  public startChrono(intervention : Interventions, slidingItem){
+  public startChrono(intervention : Interventions, slidingItem?){
     this.chronoActif = true;
     this.chronoActifInterventionId = intervention.id;
     this.interventionService.startChrono(intervention);
@@ -371,15 +387,47 @@ export class InterventionsListeComponent implements OnInit {
       buttons: [
         {
           text : 'Valider',
-          handler : async (EtatIntervention : EtatIntervention) => {
+          handler : async (etatIntervention : EtatIntervention) => {
 
-            if(EtatIntervention !== intervention.etat){
-              intervention.etat = EtatIntervention
-              await this.interventionService.put(intervention);
-              slidingItem.close();
-              this.refresh();
+            if(etatIntervention !== intervention.etat){
+              if(etatIntervention === EtatIntervention.EnAttente){
+                intervention.etat = etatIntervention;
+                await this.postPlaceholder(intervention, slidingItem);
+              }
+              if(etatIntervention !== EtatIntervention.EnAttente){
+                intervention.etat = etatIntervention;
+                await this.interventionService.put(intervention);
+                slidingItem.close();
+                this.refresh();
+              }
             }
 
+          }
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
+  public async postPlaceholder(intervention : Interventions,slidingItem){
+    const alert = await this.alertController.create({
+      header: 'Souhaitez-vous rajouter un placeholder ?',
+      inputs : [
+        {
+          type : 'text',
+          label : EtatIntervention.Nouveau,
+          name : 'placeholder'
+        }
+      ],
+      buttons: [
+        {
+          text : 'Valider',
+          handler : async (data) => {
+                intervention.placeholder = data.placeholder;
+                await this.interventionService.put(intervention);
+                await this.refresh();
+                await slidingItem.close();
           }
         }
       ],
@@ -487,5 +535,14 @@ export class InterventionsListeComponent implements OnInit {
     });
 
     await alert.present();
+  }
+
+  public showDescription(index){
+    const elem = document.getElementById("description-" + index);
+    elem.classList.remove('description-hide')
+  }
+  public removeDescription(index){
+    const elem = document.getElementById("description-" + index);
+    elem.classList.add('description-hide')
   }
 }

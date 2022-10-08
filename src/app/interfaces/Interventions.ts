@@ -7,6 +7,7 @@ export interface Interventions {
     objet : string;
     description : string;
     etat : EtatIntervention;
+    placeholder? : string;
     createdBy : string;
     createdOn : Date;
     modifiedBy? : string;
@@ -20,3 +21,7 @@ export interface Interventions {
     gaffa : boolean;
 }
 
+export interface CreatedOn {
+    seconds : number,
+    nanoseconds : number
+}

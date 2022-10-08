@@ -11,7 +11,7 @@
     (closePopUp)="closePopUpFiltreEtat()"
     *ngIf="isPopupFiltreEtatActifs"></app-popup-filtre-etat>
 
-  <ion-list *ngFor="let intervention of interventions">
+  <ion-list *ngFor="let intervention of interventions; let index = index">
 
   
     <ion-item-sliding #slidingItem>
@@ -35,7 +35,7 @@
       <ion-item (click)="emitIntervention(intervention)">
 
         <ion-label class="item-hover">
-          <ion-chip>{{ intervention.id }}</ion-chip>
+          <ion-chip class="test">{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
         </ion-label>
         
@@ -71,11 +71,18 @@
         <ion-chip color="secondary"
                   *ngIf="intervention.etat === 'En attente'"
                   class="mobile-display"
+                  (mouseenter)="showDescription(index)"
+                  (mouseleave)="removeDescription(index)"
+                  id="EnAttente-{{index}}"
                   slot="end">{{ intervention.etat }}</ion-chip>
         <ion-chip color="success"
                   *ngIf="intervention.etat === 'Terminé'"
                   class="mobile-display"
                   slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip class="description-hide"
+                  id="description-{{index}}">
+          {{ intervention.placeholder }}
+        </ion-chip>
 
       </ion-item>
       <ion-item-options side="end">

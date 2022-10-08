@@ -20,7 +20,7 @@
 
 
     <h2 *ngIf="debutPeriode !== undefined"
-        style="text-align: center; padding-top : 20px;">Période du {{ debutPeriode }} au {{ finPeriode }}</h2>
+        style="text-align: center; padding-top : 20px;">Période du {{ this.parseDateDDmmYYYY(debutPeriode) }} au {{ parseDateDDmmYYYY(finPeriode) }}</h2>
 
     <table *ngIf="debutPeriode !== undefined">
       <tr>
@@ -29,10 +29,13 @@
       </tr>
       <tr *ngFor="let intervention of interventions"
           class="tr-gaffa"
-          (click)="gaffa(intervention)">
-        <th style="text-align: left; padding : 10px;">
+          (click)="refreshChrono(intervention)">
+
+        <td style="text-align: left; padding : 10px;">
+        <!-- <td *ngIf="debutPeriode >= convertSEcondToDate(intervention.createdOn.seconds, true)" style="text-align: left; padding : 10px;"> -->
           <ion-chip>{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
+          {{ convertSEcondToDate(intervention.createdOn.seconds, false) }}
 
           <ion-chip *ngIf="intervention.etat === 'Nouveau'"
                   slot="end">{{ intervention.etat }}</ion-chip>
@@ -41,12 +44,15 @@
                     slot="end">{{ intervention.etat }}</ion-chip>
           <ion-chip color="secondary"
                     *ngIf="intervention.etat === 'En attente'"
+                    alt ="hello word"
                     slot="end">{{ intervention.etat }}</ion-chip>
           <ion-chip color="success"
                     *ngIf="intervention.etat === 'Terminé'"
                     slot="end">{{ intervention.etat }}</ion-chip>
-        </th>
-        <th>{{ convertSecondToTime(intervention.timer) }}</th>
+        </td>
+        <td>{{ convertSecondToTime(intervention.timer) }}</td>
+        <!-- <td *ngIf="debutPeriode >= convertSEcondToDate(intervention.createdOn.seconds, true)">{{ convertSecondToTime(intervention.timer) }}</td> -->
+        
       </tr>
 
       <tr>

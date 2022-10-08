@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 import { Interventions } from 'src/app/interfaces/Interventions';
 import { InterventionsService } from 'src/app/services/interventions.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -12,8 +13,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class TempsPage implements OnInit {
 
   interventions : Array<Interventions> = [];
-  debutPeriode : string;
-  finPeriode : string;
+  debutPeriode : Date;
+  finPeriode : Date;
   formulaire : FormGroup = new FormGroup({
     dateSelected : new FormControl('')
   });
@@ -21,7 +22,8 @@ export class TempsPage implements OnInit {
   isGaffa : boolean = false;
 
   constructor(private utility : UtilityService,
-              private interventionService : InterventionsService) { }
+              private interventionService : InterventionsService,
+              private alertController : AlertController) { }
 
   ngOnInit() {
   }
@@ -65,9 +67,13 @@ export class TempsPage implements OnInit {
     this.interventions = await result;
     await this.calculeTempsTotal(result);
     
-    this.debutPeriode = this.utility.parseDateDDmmYYYY(periode.dateDebut);
-    this.finPeriode = this.utility.parseDateDDmmYYYY(periode.dateFin);
+    this.debutPeriode = periode.dateDebut;
+    this.finPeriode = periode.dateFin;
   
+  }
+
+  public parseDateDDmmYYYY(date : Date){
+    return this.utility.parseDateDDmmYYYY(date);
   }
 
   private async calculeTempsTotal(interventions : Array<Interventions>){
@@ -79,6 +85,32 @@ export class TempsPage implements OnInit {
   convertSecondToTime(seconds){
     const result = this.utility.convertSecondToTime(seconds)
     return result;
+  }
+  convertSEcondToDate(seconds, returnDate : boolean){
+    return this.utility.convertSecondToDate(seconds, returnDate);
+  }
+
+  public async refreshChrono(intervention : Interventions){
+    const alert = await this.alertController.create({
+      header: 'Souhaitez-vous reporter cette tâche à la semaine prochaine ?',
+      buttons: [
+        {
+          text : 'Non',
+          handler : async () => {
+            await this.gaffa(intervention);
+          }
+        },
+        {
+          text : 'Oui',
+          handler : async () => {
+            await this.interventionService.refreshChrono(intervention);
+            await this.refresh();
+          }
+        }
+      ],
+    });
+
+    await alert.present();
   }
 
   public async gaffa(intervention : Interventions){

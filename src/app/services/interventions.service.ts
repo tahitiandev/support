@@ -27,6 +27,11 @@ export class InterventionsService {
     
   }
 
+  public async getLastIntervention(){
+    const interventions = await this.get(true);
+    return interventions.pop();
+  }
+
   public async postIntervention(intervention : Interventions){
     await this.storage.postData(
       LocalName.Interventions,
@@ -66,7 +71,7 @@ export class InterventionsService {
 
   public startChrono(intervention : Interventions){
 
-    if(intervention.etat === EtatIntervention.Nouveau){
+    if(intervention.etat !== EtatIntervention.EnCours){
       intervention.etat = EtatIntervention.EnCours;
       this.put(intervention);
     }

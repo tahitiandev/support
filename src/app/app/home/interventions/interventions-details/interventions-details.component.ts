@@ -244,6 +244,10 @@ export class InterventionsDetailsComponent implements OnInit {
     await alert.present();
   }
 
-  
+  public toDateTime(secs) {
+    const date = this.utlity.convertSecondToDate(secs);
+    return date;
+  }
+
 
 }

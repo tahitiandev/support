@@ -21,6 +21,14 @@ ion-fab{
     opacity: 0.9;
     border-radius: 300px;
 }
+.description-hide{
+    display: none;
+}
+
+.description:hover{
+    display: block!important;
+    transition: 1s;
+}
 
 @media only screen and (max-width: 768px) {
     .mobile-display{

@@ -137,6 +137,15 @@ export class UtilityService {
     return result;
   }
 
+  public convertSecondToDate(secs, retrunDate? : boolean) {
+    const date = new Date(secs*1000);
+    if(retrunDate){
+      return date
+    }else{
+      return date.toLocaleDateString();
+    }
+  }
+
   public orderByIdDesc(data : Array<any>){
     return data.sort((a,b) => {
       let x  = a.id ;

@@ -21,10 +21,16 @@
       </ion-button>
     </ion-card-subtitle>
     <ion-card-subtitle>
+      <u>Créer le </u>: {{ toDateTime(interventionsDetailsInput.createdOn.seconds) }}
+    </ion-card-subtitle>
+    <ion-card-subtitle>
       <u>Etat</u> : {{ interventionsDetailsInput.etat }}
       <ion-button (click)="updateEtat(interventionsDetailsInput)" class="btn-update" color="light">
         <ion-icon name="pencil-outline"></ion-icon>
       </ion-button>
+    </ion-card-subtitle>
+    <ion-card-subtitle *ngIf="interventionsDetailsInput.etat === 'En attente'">
+      <u>Placeholder</u> : {{ interventionsDetailsInput.placeholder }}
     </ion-card-subtitle>
   </ion-card-header>
 
@@ -43,7 +49,7 @@
   <ion-card-header>
     <ion-card-title class="title-obseration">
       {{ observation.createdBy }} le 
-      {{ observation.createdOn | date:'cc MMMM YYYY' }}
+      {{ toDateTime(observation.createdOn.seconds) }}
     </ion-card-title>
   </ion-card-header>
 
