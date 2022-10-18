@@ -35,7 +35,10 @@
         <!-- <td *ngIf="debutPeriode >= convertSEcondToDate(intervention.createdOn.seconds, true)" style="text-align: left; padding : 10px;"> -->
           <ion-chip>{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
-          {{ convertSEcondToDate(intervention.createdOn.seconds, false) }}
+          <span *ngIf="intervention.modifiedOn === null">{{ convertSEcondToDate(intervention.modifiedOn.seconds, false) }}</span>
+          <!-- <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds !== undefined">{{ convertSecondToDate(intervention.modifiedOn.seconds, false) }}</span>
+          <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds === undefined">{{ intervention.modifiedOn | date: 'dd/MM/yyyy hh:mm a' }}</span> -->
+
 
           <ion-chip *ngIf="intervention.etat === 'Nouveau'"
                   slot="end">{{ intervention.etat }}</ion-chip>

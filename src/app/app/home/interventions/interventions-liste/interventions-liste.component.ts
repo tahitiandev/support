@@ -30,12 +30,13 @@ export class InterventionsListeComponent implements OnInit {
 
   ngOnInit() {
     this.refresh();
-    this.a()
+    // this.a()
   }
 
   private async a(){
     const b = await this.interventionService.get();
-    console.log(b)
+    const a = await b.find(s => s.id === 91)
+    console.log(a)
   }
 
   private async refresh(){
@@ -89,6 +90,10 @@ export class InterventionsListeComponent implements OnInit {
       this.interventions = this.utility.orderByIdDesc(response);
     }
 
+  }
+
+  public convertSecondToDate(date : Date){
+    return this.utility.convertSecondToDate(date);
   }
 
   public async get(){

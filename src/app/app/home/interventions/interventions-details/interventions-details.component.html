@@ -2,7 +2,8 @@
             color="dark"
             class="buttonClose">Fermer</ion-button>
 
-<ion-card>
+<div class="container">
+<ion-card class="card-header">
   <ion-card-header>
     <ion-card-title>
       {{ interventionsDetailsInput.objet }}
@@ -21,28 +22,90 @@
       </ion-button>
     </ion-card-subtitle>
     <ion-card-subtitle>
-      <u>Créer le </u>: {{ toDateTime(interventionsDetailsInput.createdOn.seconds) }}
+      <u>Créé le </u>: {{ toDateTime(interventionsDetailsInput.createdOn.seconds) }}
+    </ion-card-subtitle><br>
+
+    <ion-card-subtitle *ngIf="interventionsDetailsInput.modifiedOn !== null && interventionsDetailsInput.modifiedOn.seconds !== undefined">
+      <u>Modifié le </u>: {{ toDateTime(interventionsDetailsInput.modifiedOn.seconds) }}
     </ion-card-subtitle>
+
+    <ion-card-subtitle *ngIf="interventionsDetailsInput.modifiedOn !== null && interventionsDetailsInput.modifiedOn.seconds === undefined">
+      <u>Modifié le </u>: {{ interventionsDetailsInput.modifiedOn | date: 'dd/MM/yyyy hh:mm a'}}
+    </ion-card-subtitle>
+  </ion-card-header>
+</ion-card>
+<br>
+
+<ion-card class="card-header">
+  <ion-card-header>
+
+    <ion-card-subtitle>GAFFA</ion-card-subtitle>
+
+    <ion-card-subtitle >
+      <u>GAFFA </u>: {{ interventionsDetailsInput.gaffa ? "Oui" : "Non"  }}
+      <ion-button (click)="updateGaffaOfFirebase(interventionsDetailsInput, true)" class="btn-update" color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-card-subtitle><br>
+
     <ion-card-subtitle>
       <u>Etat</u> : {{ interventionsDetailsInput.etat }}
       <ion-button (click)="updateEtat(interventionsDetailsInput)" class="btn-update" color="light">
         <ion-icon name="pencil-outline"></ion-icon>
       </ion-button>
     </ion-card-subtitle>
+
     <ion-card-subtitle *ngIf="interventionsDetailsInput.etat === 'En attente'">
       <u>Placeholder</u> : {{ interventionsDetailsInput.placeholder }}
     </ion-card-subtitle>
+    
+    <ion-card-subtitle>
+      <u>Temps d'intervention</u> : {{ convertSecondToTime(interventionsDetailsInput.timer) }}
+      <ion-button (click)="messageRefreshChrono(interventionsDetailsInput)" class="btn-update" color="light">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+      
+    </ion-card-subtitle>
+    
   </ion-card-header>
+</ion-card>
+<br>
 
-  <ion-card-content>
-    <u>Description</u> :
-    <ion-button (click)="updateDescription(interventionsDetailsInput)" class="btn-update" color="light">
-      <ion-icon name="pencil-outline"></ion-icon>
-    </ion-button>
-    <br>
-    {{ textarea(interventionsDetailsInput.description) }}
-  </ion-card-content>
+
+<ion-card class="card-header">
+  <ion-card-header>
+
+    <ion-card-subtitle>FIREBASE</ion-card-subtitle>
+    
+    <ion-card-subtitle>
+      <u>Envoyé sur Firebase </u>: {{ interventionsDetailsInput.firebase ? "Oui" : "Non" }}
+      <ion-button (click)="updateGaffaOfFirebase(interventionsDetailsInput, false)" class="btn-update" color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+    </ion-card-subtitle><br>
+
+    <ion-card-subtitle >
+      <u>Id Firebase </u>: {{ interventionsDetailsInput.documentId }}
+    </ion-card-subtitle><br>
+
+    
+
+  </ion-card-header>
   
+</ion-card>
+</div><!-- class="container" -->
+
+<ion-card>
+  <ion-card-header>
+    <ion-card-content>
+      <u>Description</u> :
+      <ion-button (click)="updateDescription(interventionsDetailsInput)" class="btn-update" color="light">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+      <br>
+      {{ textarea(interventionsDetailsInput.description) }}
+    </ion-card-content>
+  </ion-card-header>
 </ion-card>
 
 <ion-card *ngFor="let observation of observations" class="observation-card">
@@ -58,7 +121,6 @@
   </ion-card-content>
   
 </ion-card>
-
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed">
   <ion-fab-button (click)="this.postObservation(interventionsDetailsInput)">

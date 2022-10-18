@@ -37,6 +37,9 @@
         <ion-label class="item-hover">
           <ion-chip class="test">{{ intervention.id }}</ion-chip>
           {{ intervention.objet }}
+           <span *ngIf="intervention.modifiedOn === null"><ion-chip class="test">{{ convertSecondToDate(intervention.createdOn.seconds) }}</ion-chip></span>
+           <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds !== undefined"><ion-chip class="test">{{ convertSecondToDate(intervention.modifiedOn.seconds) }}</ion-chip></span>
+           <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds === undefined"><ion-chip class="test">{{ intervention.modifiedOn | date: 'dd/MM/yyyy hh:mm a' }}</ion-chip></span>
         </ion-label>
         
         <!-- TIMER -->

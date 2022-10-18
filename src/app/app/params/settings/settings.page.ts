@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Interventions } from 'src/app/interfaces/Interventions';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { InterventionsService } from 'src/app/services/interventions.service';
 
 @Component({
   selector: 'app-settings',
@@ -8,9 +10,13 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 })
 export class SettingsPage implements OnInit {
 
-  constructor(private firebase : FirebaseService) { }
+  nbInterventionNonEnvoyee : number = 0;
+
+  constructor(private firebase : FirebaseService,
+              private interventionService : InterventionsService) { }
 
   ngOnInit() {
+    this.interventionNonEnvoyee();
   }
 
   public async postAllToFirebase(){
@@ -20,5 +26,12 @@ export class SettingsPage implements OnInit {
   public async getAllFromFirebase(){
     await this.getAllFromFirebase();
   }
+
+  private async interventionNonEnvoyee(){
+    const Interventions : Array<Interventions> = await this.interventionService.get();
+    const interventionNonEnvoyee = Interventions.filter(intervention => intervention.firebase === false);
+    this.nbInterventionNonEnvoyee = interventionNonEnvoyee.length;
+  }
+
 
 }

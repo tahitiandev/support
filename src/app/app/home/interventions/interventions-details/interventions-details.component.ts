@@ -24,7 +24,7 @@ export class InterventionsDetailsComponent implements OnInit {
   constructor(private alertController : AlertController,
               private interventionService : InterventionsService,
               private utilisateurService : UtilisateursService,
-              private utlity : UtilityService,
+              private utility : UtilityService,
               private observationService : ObservationsService,
               private storage : Storage) { }
 
@@ -35,7 +35,6 @@ export class InterventionsDetailsComponent implements OnInit {
   private async refresh(){
     const observations = await this.getObservations();
     this.observations = observations;
-    document.querySelector('.observations-content').innerHTML;
   }
 
   public async getObservations(){
@@ -168,7 +167,7 @@ export class InterventionsDetailsComponent implements OnInit {
   }
 
   public textarea(texte){
-    return this.utlity.textareaRetourChariot(texte);
+    return this.utility.textareaRetourChariot(texte);
   }
 
   public async updateObjet(intervention : Interventions){
@@ -245,8 +244,98 @@ export class InterventionsDetailsComponent implements OnInit {
   }
 
   public toDateTime(secs) {
-    const date = this.utlity.convertSecondToDate(secs);
+    const date = this.utility.convertSecondToDate(secs);
     return date;
+  }
+
+  
+  public async updateGaffaOfFirebase(intervention : Interventions, isGaffa : boolean){
+
+    var checked = true
+
+    if(isGaffa){
+      checked = intervention.gaffa
+    }
+    if(!isGaffa){
+      checked = intervention.firebase
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Ajouter une observation',
+      inputs : [
+        {
+          type : 'radio',
+          label : 'Oui',
+          value : true,
+          checked : checked
+        },
+        {
+          type : 'radio',
+          label : 'Non',
+          value : false,
+          checked : !checked
+        }
+      ],
+      buttons: [
+        {
+          text : 'Valider',
+          
+          handler : async (response) => {
+
+            if(isGaffa){
+              intervention.gaffa = response;
+            }
+            
+            if(!isGaffa){
+              intervention.firebase = response;
+              this.utility.popUp('La fonction a été désactivée car elle peut egendrer des erreurs')
+            }
+
+            if(isGaffa){ // Condition temporaire pour éviter de update la valeur firebase
+              await this.interventionService.put(intervention);
+            }
+            await this.refresh();
+
+          }
+        }
+      ],
+    });
+
+    await alert.present();
+  }
+
+  public convertSecondToTime(seconds){
+    var date = new Date(null);
+    date.setSeconds(seconds); // specify value for SECONDS here
+    var result = date.toISOString().substr(11, 8);
+    return result;
+  }
+
+  public async refreshChrono(intervention : Interventions){
+    await this.interventionService.refreshChrono(intervention);
+    await this.refresh();
+  }
+
+  public async messageRefreshChrono(intervention : Interventions,){
+    const alert = await this.alertController.create({
+      header: 'Voulez-vous réellement remettre le chrono à 0',
+      buttons: [
+        {
+          text : 'Oui',
+          handler : async () => { 
+            await this.refreshChrono(intervention);
+          }
+        },
+        {
+          text : 'Non',
+          handler : async () => { 
+            await this.utility.popUp('Opération annulée');
+          }
+        }
+      ],
+    });
+
+    await alert.present();
   }
 
 

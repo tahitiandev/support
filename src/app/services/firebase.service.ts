@@ -29,8 +29,10 @@ export class FirebaseService {
                    var alldata = [];
                    for(let data of result){
                      var parseData : any = data.payload.doc.data();
-                     parseData.documentId = data.payload.doc.id;                     
-                     alldata.push(parseData)
+                     parseData.documentId = data.payload.doc.id;
+                     if(parseData.deletedOn === null){
+                       alldata.push(parseData)
+                     }
                    }
                    this.storage.set(collectionName, alldata)
                  })

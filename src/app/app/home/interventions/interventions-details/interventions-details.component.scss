@@ -18,3 +18,13 @@ ion-card-content {
     color: white;
     font-size: small;
 }
+.container{
+    display: flex;
+}
+.card-header{
+    width: 45%;
+}
+
+ion-card-subtitle{
+    font-weight: bold;
+}

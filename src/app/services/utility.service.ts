@@ -139,12 +139,36 @@ export class UtilityService {
 
   public convertSecondToDate(secs, retrunDate? : boolean) {
     const date = new Date(secs*1000);
-    if(retrunDate){
-      return date
-    }else{
-      return date.toLocaleDateString();
+
+    // JOUR
+    var jourTmp = date.getDate();
+    var jour = jourTmp.toString()
+    if(jourTmp < 10){
+      jour = '0' + jour;
     }
+    
+    // MOIS
+    var moisTmp = date.getMonth() + 1;
+    var mois = moisTmp.toString()
+    
+    if(moisTmp < 10){
+      mois = '0' + mois;
+    }
+    
+    // DATE COMPLETE
+    var today = jour + "/" + mois+ "/" + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+
+    return today;
   }
+
+  // public convertSecondToDate(secs, retrunDate? : boolean) {
+  //   const date = new Date(secs*1000);
+  //   if(retrunDate){
+  //     return date
+  //   }else{
+  //     return date.toLocaleDateString();
+  //   }
+  // }
 
   public orderByIdDesc(data : Array<any>){
     return data.sort((a,b) => {
