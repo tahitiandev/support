@@ -75,20 +75,29 @@ export class InterventionsListeComponent implements OnInit {
       this.interventions = interventions;
     }
 
-    if(this.filtres.Etats.length > 0){
+    
+    if(this.filtres.Etats === undefined){
+      this.filtres.Etats = [];
+      this.filtres.Etats.push(EtatIntervention.Termine)
+    }else{
       
-      const response : Array<Interventions> = [];
-      
-      for(let etat of this.filtres.Etats){
-        await this.interventions.map(intervention => {
-          if(intervention.etat === etat){
-            response.push(intervention);
+        if(this.filtres.Etats.length > 0){
+          
+          const response : Array<Interventions> = [];
+          
+          for(let etat of this.filtres.Etats){
+            await this.interventions.map(intervention => {
+              if(intervention.etat === etat){
+                response.push(intervention);
+              }
+            });
           }
-        });
-      }
-
-      this.interventions = this.utility.orderByIdDesc(response);
+    
+          this.interventions = this.utility.orderByIdDesc(response);
+       }
     }
+
+    await this.utility.setFiltre(this.filtres);
 
   }
 

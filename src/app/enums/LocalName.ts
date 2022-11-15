@@ -4,4 +4,5 @@ export enum LocalName{
     Observations = "Observations",
     Connect = "Connect",
     Filtres = "Filtres",
+    RegistreBackup = "RegistreBackup"
 }

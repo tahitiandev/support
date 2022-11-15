@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'temps',
     loadChildren: () => import('./temps/temps.module').then( m => m.TempsPageModule)
+  },
+  {
+    path: 'registre-backup',
+    loadChildren: () => import('./registre-backup/registre-backup.module').then( m => m.RegistreBackupPageModule)
   }
 ];
 

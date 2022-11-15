@@ -68,7 +68,8 @@ export class AppComponent implements OnInit {
       this.navBarFirst = [
         { title: 'Accueil', url: '/home', icon: 'home' },
         { title: 'Tâches', url: '/interventions', icon: 'hammer' },
-        { title: 'Gestion du temps', url: '/temps', icon: 'timer' }
+        { title: 'Gestion du temps', url: '/temps', icon: 'timer' },
+        { title: 'Registre backup', url: '/registre-backup', icon: 'timer' }
       ];
       
       this.navBarreSecond = [

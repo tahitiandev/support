@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalName } from 'src/app/enums/localName';
 import { Interventions } from 'src/app/interfaces/Interventions';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { InterventionsService } from 'src/app/services/interventions.service';
@@ -24,7 +25,9 @@ export class SettingsPage implements OnInit {
   }
 
   public async getAllFromFirebase(){
-    await this.getAllFromFirebase();
+    await this.firebase.getAll(LocalName.Interventions);
+    await this.firebase.getAll(LocalName.Utilisateurs);
+    await this.firebase.getAll(LocalName.Observations);
   }
 
   private async interventionNonEnvoyee(){
