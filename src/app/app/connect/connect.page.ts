@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { LocalName } from 'src/app/enums/localName';
 import { Utilisateurs } from 'src/app/interfaces/Utilisateurs';
+import { FirebaseService } from 'src/app/services/firebase.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { UtilisateursService } from 'src/app/services/utilisateurs.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -22,6 +23,7 @@ export class ConnectPage implements OnInit {
   constructor(private storage : StorageService,
               private alertController : AlertController,
               private utilisateursService : UtilisateursService,
+              private firebase : FirebaseService,
               private utility : UtilityService) {
                 this.deconnexion();
                }
@@ -41,18 +43,17 @@ export class ConnectPage implements OnInit {
 
       if(isUtilisateursExiste.password === password){
         
-        const validation = {
-          id : 0,
-          autorisation : true
-        }
+        const infoConnexion = [
+          {
+            id : 0,
+            autorisation : true,
+            utilisateur : await this.utilisateursService.getUtilisateurByLogin(data['username'])
+          }
+        ]
 
         await this.storage.resetLocalStorage(LocalName.Connect);
-        await this.storage.postData(
-          LocalName.Connect,
-          validation
-        )
-
-        this.utility.navigateTo('/')
+        await this.storage.connexion(infoConnexion);
+        this.utility.navigateTo('/');
       }
 
     }else{
@@ -65,16 +66,7 @@ export class ConnectPage implements OnInit {
   }
 
   private async deconnexion(){
-    const validation = {
-      id : 0,
-      autorisation : false
-    }
-
-    await this.storage.resetLocalStorage(LocalName.Connect);
-    await this.storage.postData(
-      LocalName.Connect,
-      validation
-    )
+    await this.storage.deconnexion();
   }
 
   public async postUtilisateur(){
@@ -134,6 +126,12 @@ export class ConnectPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  public async syncToFirebase(){
+    await this.firebase.getAll(LocalName.Interventions);
+    await this.firebase.getAll(LocalName.Utilisateurs);
+    await this.firebase.getAll(LocalName.Observations);
   }
 
 }

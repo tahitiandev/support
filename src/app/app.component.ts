@@ -15,22 +15,20 @@ export class AppComponent implements OnInit {
 
   constructor(private storage : StorageService,
               private storages : Storage,
-              private utility : UtilityService) {
+              private utility : UtilityService ) {
   }
 
   ngOnInit(): void {
     this.onInit();
-
-    setTimeout(() => {
-      this.connexion();
-    }, 1000);
   }
 
   private async onInit(){
     await this.setUtilisateurs();
     await this.setInterventions();
+    await this.setObservations();
     await this.setConnect();
     await this.connexion();
+    await this.setFiltre();
   }
 
   private async setUtilisateurs(){
@@ -41,8 +39,16 @@ export class AppComponent implements OnInit {
     await this.storage.initLocalName(LocalName.Interventions);
   }
 
+  private async setObservations(){
+    await this.storage.initLocalName(LocalName.Observations);
+  }
+
   private async setConnect(){
     await this.storage.initLocalName(LocalName.Connect, true);    
+  }
+
+  private async setFiltre(){
+    await this.storage.initLocalNameForObject(LocalName.Filtres);    
   }
 
   public async connexion(){
@@ -61,12 +67,15 @@ export class AppComponent implements OnInit {
     if(connect[0].autorisation){
       this.navBarFirst = [
         { title: 'Accueil', url: '/home', icon: 'home' },
-        { title: 'Interventions', url: '/interventions', icon: 'hammer' }
+        { title: 'Tâches', url: '/interventions', icon: 'hammer' },
+        { title: 'Gestion du temps', url: '/temps', icon: 'timer' },
+        { title: 'Registre backup', url: '/registre-backup', icon: 'timer' }
       ];
       
       this.navBarreSecond = [
-        { title: 'Utilisateurs', url: '/utilisateurs', icon: 'happy' },
-        { title: 'Se deconnecter', url: '/connect', icon: 'happy' },
+        { title: 'Utilisateurs', url: '/utilisateurs', icon: 'man' },
+        { title: 'Paramétrages', url: '/settings', icon: 'build' },
+        { title: 'Se deconnecter', url: '/connect', icon: 'power' },
       ]
     }
 

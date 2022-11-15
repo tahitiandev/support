@@ -9,4 +9,5 @@ export interface Observations{
     deletedOn? : Date;
     firebase : boolean;
     documentId : string;
+    interventionId : number;
 }

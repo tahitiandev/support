@@ -15,3 +15,11 @@ table, td, th {
   h5{
       margin-left: 20px;
   }
+  .td-click{
+    cursor: pointer;
+    transition-duration: 1s;
+  }
+  .td-click:hover {
+    cursor: pointer;
+    background-color: blueviolet;
+  }

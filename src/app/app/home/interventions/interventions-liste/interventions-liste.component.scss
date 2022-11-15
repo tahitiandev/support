@@ -1,0 +1,40 @@
+ion-fab{
+    position: fixed;
+}
+
+.item-hover{
+    transition: 1s;
+}
+.item-hover:hover{
+    // background-color: blueviolet;
+    transition: 1s;
+    cursor: pointer;
+}
+
+#mobile-timer{
+    display: none;
+    position: fixed; left: 10%; top: 25%;
+    width: 300px; height: 300px; line-height: 300px;
+    z-index: 1; font-size: xx-large;
+    text-align: center;
+    background: greenyellow; color: black;
+    opacity: 0.9;
+    border-radius: 300px;
+}
+.description-hide{
+    display: none;
+}
+
+.description:hover{
+    display: block!important;
+    transition: 1s;
+}
+
+@media only screen and (max-width: 768px) {
+    .mobile-display{
+        display: none;
+    }
+    #mobile-timer{
+        display: block!important;
+    }
+  }

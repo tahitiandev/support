@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { EtatIntervention } from 'src/app/enums/EtatsIntervention';
 import { LocalName } from 'src/app/enums/localName';
 import { Interventions } from 'src/app/interfaces/Interventions';
@@ -7,10 +8,12 @@ import { InterventionsService } from 'src/app/services/interventions.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { UtilisateursService } from 'src/app/services/utilisateurs.service';
 
+
 interface InterventionParUtilisateur {
   utilisateur : string;
   nombre : number;
   etat : EtatIntervention;
+  idIntervention : Array<number>;
 }
 
 
@@ -22,10 +25,13 @@ interface InterventionParUtilisateur {
 export class HomePage implements OnInit {
 
   interventionParUtilisateur = [];
+  @Output() refreshNavBarOutput = new EventEmitter();
+  homeActif : boolean = true;
 
   constructor(private storage : StorageService,
               private interventionsService : InterventionsService,
-              private utiliateursService : UtilisateursService) { }
+              private utiliateursService : UtilisateursService,
+              private navigate : NavController) { }
 
   ngOnInit() {
     this.refresh();
@@ -51,6 +57,7 @@ export class HomePage implements OnInit {
     const result = []
     const resultNouveau = await this.getInterventionByUtilisateurByEtat(EtatIntervention.Nouveau);
     const resultEnCours = await this.getInterventionByUtilisateurByEtat(EtatIntervention.EnCours);
+    const resultEnAttente = await this.getInterventionByUtilisateurByEtat(EtatIntervention.EnAttente);
     const resultTermine = await this.getInterventionByUtilisateurByEtat(EtatIntervention.Termine);
 
     for(let utilisateur of utilisateurs){
@@ -58,25 +65,40 @@ export class HomePage implements OnInit {
       var tempResult = {
         utilisateur : utilisateur,
         totalNouveau : 0,
+        idNouveau : [],
         totalEnCours : 0,
-        totalTermine : 0
+        idEncours : [],
+        totalEnAttente : 0,
+        idEnAttente : [],
+        totalTermine : 0,
+        idTermine : [],
       }
 
       for(let data of resultNouveau){
         if(data.utilisateur === utilisateur.libelle){
-          tempResult.totalNouveau = data.nombre
+          tempResult.totalNouveau = data.nombre;
+          tempResult.idNouveau = data.idIntervention;
         }
       }
-
+      
       for(let data of resultEnCours){
         if(data.utilisateur === utilisateur.libelle){
           tempResult.totalEnCours = data.nombre
+          tempResult.idEncours = data.idIntervention;
         }
       }
 
+      for(let data of resultEnAttente){
+        if(data.utilisateur === utilisateur.libelle){
+          tempResult.totalEnAttente = data.nombre
+          tempResult.idEnAttente = data.idIntervention;
+        }
+      }
+      
       for(let data of resultTermine){
         if(data.utilisateur === utilisateur.libelle){
           tempResult.totalTermine = data.nombre
+          tempResult.idTermine = data.idIntervention;
         }
       }
 
@@ -95,25 +117,40 @@ export class HomePage implements OnInit {
 
     for(let utilisateur of utilisateurs){
 
-      result.push({
-        utilisateur : utilisateur.libelle,
-        nombre : 0,
-        etat : EtatIntervention
-      })
-
-      for(let intervention of interventions){
-        if(intervention.intervenant.libelle === utilisateur.libelle){
-          if(intervention.etat === EtatIntervention){
-            result[index].nombre++
+      try{
+        result.push({
+          utilisateur : utilisateur.libelle,
+          nombre : 0,
+          etat : EtatIntervention,
+          idIntervention : []
+        })
+  
+        for(let intervention of interventions){
+          if(intervention.intervenant.id === utilisateur.id){
+            if(intervention.etat === EtatIntervention){
+              result[index].nombre++
+              result[index].idIntervention.push(intervention.id);
+            }
           }
         }
+  
+        index ++
+      }catch(error) {
+        console.error(error)
       }
-
-      index ++
       
     }
 
     return result;
+  }
+
+  public refreshNavBar(event){
+    this.refreshNavBarOutput.emit();
+    event.target.complete();
+  }
+
+  public viewDetail(utilisateur, etat){
+    this.navigate.navigateRoot('interventions/' + utilisateur + '/' + etat);
   }
 
 }

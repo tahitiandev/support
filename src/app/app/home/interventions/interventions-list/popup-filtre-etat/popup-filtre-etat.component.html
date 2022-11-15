@@ -1,0 +1,18 @@
+<form [formGroup]="formulaire" (ngSubmit)="emitEtat()">
+  <ion-card id="pop-up">
+    <ion-card-header>
+      <ion-card-title >Filtrer par Etat</ion-card-title>
+    </ion-card-header>
+      <ion-item *ngFor="let etat of etats">
+        <ion-checkbox slot="start"
+                      [checked]="etat.value"
+                      (ionChange)="updateFiltreEtat(etat)"
+                      ></ion-checkbox>
+        <ion-label>{{ etat.etat }}</ion-label>
+      </ion-item>
+    <ion-card-content>
+      <ion-button (click)="close()" color="secondary">Annuler</ion-button>
+      <ion-button type="submit" color="primary">Valider</ion-button>
+    </ion-card-content>
+  </ion-card>
+</form>

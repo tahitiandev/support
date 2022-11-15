@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Registre de backup</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <br>
+  <input type="file" (change)="onFileChange($event)">
+  <div style="margin: 20px; margin-left: 20%; margin-right: 20%;">
+
+    <br><br>
+
+    <ion-list lines="none" *ngFor="let data of exceltoJson.sheet2">
+    <ion-item>
+      <ion-label>
+        <strong>{{data.Client}}</strong><br>
+        Suivi par :  {{data.Name}}<br>
+        Date récupéré : {{ ExcelDateToJSDate(data.Date) | date: 'dd/MM/yyyy' }} <br>
+        Date de suppression : {{ ExcelDateToJSDate((data.Date - 0) + (data['Durée accordée'] - 0)) | date: 'dd/MM/yyyy'}} <br>
+        Durée de conservation: {{ data['Durée accordée'] }}
+      </ion-label>
+      <ion-button slot="end">
+        Clôturer
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  </div>
+</ion-content>

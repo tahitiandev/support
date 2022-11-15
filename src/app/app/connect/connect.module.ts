@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ConnectPageRoutingModule } from './connect-routing.module';
 
 import { ConnectPage } from './connect.page';
+import { RefeshGetFirebaseComponent } from '../../utility/refesh-get-firebase/refesh-get-firebase.component'
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import { ConnectPage } from './connect.page';
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [ConnectPage]
+  declarations: [
+    ConnectPage,
+    RefeshGetFirebaseComponent
+  ]
 })
 export class ConnectPageModule {}

@@ -1,22 +1,108 @@
 <div style="margin: 20px;">
-  <ion-list *ngFor="let intervention of interventions; let id = index">
+  <!-- <div id="mobile-timer">{{ interventionActif.timer }}</div> -->
+
+  <app-popup-filtres
+    *ngIf="isPopupFiltresActifs"
+    (filtreEtatOutput)="togglePopupFiltreEtat()"
+    (filtreGaffaOutput)="filtreGaffa()"
+  ></app-popup-filtres>
+
+  <app-popup-filtre-etat
+    (closePopUp)="closePopUpFiltreEtat()"
+    *ngIf="isPopupFiltreEtatActifs"></app-popup-filtre-etat>
+
+  <ion-list *ngFor="let intervention of interventions; let index = index">
 
   
-    <ion-item-sliding>
+    <ion-item-sliding #slidingItem>
+
+      <ion-item-options side="start">
+        <ion-item-option
+          *ngIf="!chronoActif" 
+          (click)="startChrono(intervention, slidingItem)">Start
+        </ion-item-option>
+        <ion-item-option
+          style="background: red;" 
+          *ngIf="chronoActif"
+          [disabled]="chronoActif && intervention.id !== chronoActifInterventionId" 
+          (click)="stopChrono(intervention,slidingItem)">Stop</ion-item-option>
+        <ion-item-option
+          style="background: rgb(80, 10, 37);" 
+          [disabled]="chronoActif && intervention.id !== chronoActifInterventionId" 
+          (click)="messageRefreshChrono(intervention,slidingItem)">Refresh<br>Chrono</ion-item-option>
+      </ion-item-options>
+
       <ion-item (click)="emitIntervention(intervention)">
-        <ion-label>
-          <ion-chip>{{ id }}</ion-chip> {{ intervention.etat }} {{ intervention.objet }}</ion-label>
+
+        <ion-label class="item-hover">
+          <ion-chip class="test">{{ intervention.id }}</ion-chip>
+          {{ intervention.objet }}
+           <span *ngIf="intervention.modifiedOn === null"><ion-chip class="test">{{ convertSecondToDate(intervention.createdOn.seconds) }}</ion-chip></span>
+           <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds !== undefined"><ion-chip class="test">{{ convertSecondToDate(intervention.modifiedOn.seconds) }}</ion-chip></span>
+           <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds === undefined"><ion-chip class="test">{{ intervention.modifiedOn | date: 'dd/MM/yyyy hh:mm a' }}</ion-chip></span>
+        </ion-label>
+        
+        <!-- TIMER -->
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined && chronoActif && intervention.id !== chronoActifInterventionId"
+          class="mobile-display"
+          color="warning"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
+
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined && !chronoActif"
+          class="mobile-display"
+          color="warning"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
+
+        <ion-chip 
+          *ngIf="intervention.timer !== undefined && chronoActif && intervention.id === chronoActifInterventionId"
+          color="tertiary"
+          slot="end">{{ convertSecondToTime(intervention.timer) }}
+        </ion-chip>
+
+        <!-- ETAT -->
+        <ion-chip *ngIf="intervention.etat === 'Nouveau'"
+                  class="mobile-display"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="secondary"
+                  *ngIf="intervention.etat === 'En cours'"
+                  class="mobile-display"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="secondary"
+                  *ngIf="intervention.etat === 'En attente'"
+                  class="mobile-display"
+                  (mouseenter)="showDescription(index)"
+                  (mouseleave)="removeDescription(index)"
+                  id="EnAttente-{{index}}"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip color="success"
+                  *ngIf="intervention.etat === 'Terminé'"
+                  class="mobile-display"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+        <ion-chip class="description-hide"
+                  id="description-{{index}}">
+          {{ intervention.placeholder }}
+        </ion-chip>
+
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option (click)="update(intervention)">Modifier</ion-item-option>
-        <ion-item-option style="background: red;" (click)="delete(intervention)">Supprimer</ion-item-option>
+        <ion-item-option style="background-color: green;" (click)="updateEtat(intervention,slidingItem)">Etat</ion-item-option>
+        <ion-item-option (click)="update(intervention,slidingItem)">Modifier</ion-item-option>
+        <ion-item-option style="background: red;" (click)="delete(intervention,slidingItem)">Supprimer</ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-  </ion-list>
-  
+  </ion-list>  
   
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="this.post()">
+    <ion-fab-button (click)="filtreMessage()">
+    <!-- <ion-fab-button (click)="togglePopupFiltres()"> -->
+      <ion-icon name="filter-outline"></ion-icon>
+    </ion-fab-button>
+    <br>
+    <ion-fab-button (click)="post()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

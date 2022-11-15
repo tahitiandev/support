@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestion du temps</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div style="padding: 20px;">
+
+    <form [formGroup]="this.formulaire">
+      <ion-item>
+        <ion-label position="floating">Renseigner une date</ion-label>
+        <ion-input type="date" (ionChange)="getDate()" formControlName="dateSelected"></ion-input>
+      </ion-item>
+    </form>
+
+
+    <h2 *ngIf="debutPeriode !== undefined"
+        style="text-align: center; padding-top : 20px;">Période du {{ this.parseDateDDmmYYYY(debutPeriode) }} au {{ parseDateDDmmYYYY(finPeriode) }}</h2>
+
+    <table *ngIf="debutPeriode !== undefined">
+      <tr>
+        <th>Tâches</th>
+        <th>Temps</th>
+      </tr>
+      <tr *ngFor="let intervention of interventions"
+          class="tr-gaffa"
+          (click)="refreshChrono(intervention)">
+
+        <td style="text-align: left; padding : 10px;">
+        <!-- <td *ngIf="debutPeriode >= convertSEcondToDate(intervention.createdOn.seconds, true)" style="text-align: left; padding : 10px;"> -->
+          <ion-chip>{{ intervention.id }}</ion-chip>
+          {{ intervention.objet }}
+          <span *ngIf="intervention.modifiedOn === null">{{ convertSEcondToDate(intervention.modifiedOn.seconds, false) }}</span>
+          <!-- <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds !== undefined">{{ convertSecondToDate(intervention.modifiedOn.seconds, false) }}</span>
+          <span *ngIf="intervention.modifiedOn !== null && intervention.modifiedOn.seconds === undefined">{{ intervention.modifiedOn | date: 'dd/MM/yyyy hh:mm a' }}</span> -->
+
+
+          <ion-chip *ngIf="intervention.etat === 'Nouveau'"
+                  slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="secondary"
+                    *ngIf="intervention.etat === 'En cours'"
+                    slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="secondary"
+                    *ngIf="intervention.etat === 'En attente'"
+                    alt ="hello word"
+                    slot="end">{{ intervention.etat }}</ion-chip>
+          <ion-chip color="success"
+                    *ngIf="intervention.etat === 'Terminé'"
+                    slot="end">{{ intervention.etat }}</ion-chip>
+        </td>
+        <td>{{ convertSecondToTime(intervention.timer) }}</td>
+        <!-- <td *ngIf="debutPeriode >= convertSEcondToDate(intervention.createdOn.seconds, true)">{{ convertSecondToTime(intervention.timer) }}</td> -->
+        
+      </tr>
+
+      <tr>
+        <th style="text-align: right;">Total : </th>
+        <th>{{ convertSecondToTime(tempsTotal) }}</th>
+      </tr>
+
+    </table>
+
+  </div>
+
+  <app-refesh-get-firebase></app-refesh-get-firebase>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="this.filtreGaffa()">
+      <ion-icon name="filter-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

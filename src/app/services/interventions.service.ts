@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EtatIntervention } from '../enums/EtatsIntervention';
 import { LocalName } from '../enums/localName';
 import { Interventions } from '../interfaces/Interventions';
 import { StorageService } from './storage.service';
@@ -10,8 +11,25 @@ export class InterventionsService {
 
   constructor(private storage : StorageService) { }
 
-  public async get(){
-    return await this.storage.get(LocalName.Interventions);
+  public async get(orderByDesc ? : boolean){
+    if(orderByDesc){
+      return await this.storage.get(LocalName.Interventions, orderByDesc);
+    }else{
+      return await this.storage.get(LocalName.Interventions);
+    }
+  }
+
+  public async getInterventionByUtilisateurAndEtat(utilisateurId : number, etat : EtatIntervention){
+    const interventions : Array<Interventions> = await this.get(true);
+    const interventionByEtat = await interventions.filter(intervention => intervention.etat === etat);
+    const interventionByUtilisateur = await interventionByEtat.filter(intervention => intervention.intervenant.id === utilisateurId);
+    return interventionByUtilisateur
+    
+  }
+
+  public async getLastIntervention(){
+    const interventions = await this.get(true);
+    return interventions.pop();
   }
 
   public async postIntervention(intervention : Interventions){
@@ -46,6 +64,54 @@ export class InterventionsService {
     const interventions = await this.get();
     const response = await interventions.find(interventions => interventions.id === id);
     return response;
+  }
+
+  compteur : number = 0;
+  compteurActif : boolean = false;
+
+  public startChrono(intervention : Interventions){
+
+    if(intervention.etat !== EtatIntervention.EnCours){
+      intervention.etat = EtatIntervention.EnCours;
+      this.put(intervention);
+    }
+
+    if(intervention.timer !== undefined){
+      this.compteur = intervention.timer;
+    }else{
+      this.compteur = 0;
+    }
+    this.compteurActif = true;
+    const eventChrono = setInterval(() => {
+      if(this.compteurActif){
+        intervention.timer = this.compteur;
+        this.storage.put(
+          LocalName.Interventions,
+          intervention
+          );
+        this.compteur++
+      }else{
+        clearInterval(eventChrono);
+      }
+    },1000);
+
+    eventChrono
+    
+  }
+
+  public stopChrono(intervention : Interventions){
+    this.compteurActif = false;
+
+    intervention.timer = this.compteur;
+    this.put(intervention);
+    
+  }
+
+  public async refreshChrono(intervention : Interventions){
+    intervention.timer = 0;
+    intervention.gaffa = false;
+    intervention.etat = EtatIntervention.Nouveau;
+    await this.put(intervention);
   }
 
 }

@@ -26,7 +26,10 @@
       <ion-button type="submit" expand="block">Valider</ion-button>
     </div>
 
-    <a (click)="postUtilisateur()">Créer un compte</a>
+    <a (click)="postUtilisateur()">Créer un compte</a><br>
+    <a (click)="syncToFirebase()">Synchronisation avec Firebase</a>
   </form>
+
+  <app-refesh-get-firebase></app-refesh-get-firebase>
 
 </ion-content>

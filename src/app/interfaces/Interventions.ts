@@ -7,7 +7,7 @@ export interface Interventions {
     objet : string;
     description : string;
     etat : EtatIntervention;
-    observations : Array<Observations>;
+    placeholder? : string;
     createdBy : string;
     createdOn : Date;
     modifiedBy? : string;
@@ -17,5 +17,11 @@ export interface Interventions {
     firebase : boolean;
     documentId : string;
     intervenant : Utilisateurs;
+    timer? : number;
+    gaffa : boolean;
 }
 
+export interface CreatedOn {
+    seconds : number,
+    nanoseconds : number
+}
